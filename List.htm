@@ -1,0 +1,534 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>DSair</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="height=device-height,width=device-width,height=device-height,initial-scale=1.0" />
+    <meta name="author" content="Desktop Station Co.,Ltd." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="apple-touch-icon" href="SD_WLAN/c/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="SD_WLAN/c/favicon.ico" type="image/vnd.microsoft.icon" />
+    <link rel="stylesheet" href="SD_WLAN/c/jqui.css" />
+    <link rel="stylesheet" href="SD_WLAN/c/jquery-ui-1.12.icon-font.min.css" />
+    <link rel="stylesheet" href="SD_WLAN/c/toastr.min.css" />
+    <link rel="stylesheet" href="SD_WLAN/css/dsair.css" />
+    <link rel="stylesheet" href="SD_WLAN/css/dsair_toast.css" />
+    <script>
+        'use strict';
+        var DsairDebug = false;
+    </script>
+    <script src="SD_WLAN/c/jq.js"></script>
+    <script src="SD_WLAN/c/jqui.js"></script>
+    <script src="SD_WLAN/c/toastr.min.js"></script>
+
+    <script src="SD_WLAN/js/inherits.js"></script>
+    <script src="SD_WLAN/js/dsair_globals.js"></script>
+    <script src="SD_WLAN/js/flashair_util.js"></script>
+    <script src="SD_WLAN/js/device.js"></script>
+    <script src="SD_WLAN/js/storage.js"></script>
+    <script src="SD_WLAN/js/dsair_command.js"></script>
+    <script src="SD_WLAN/js/dsair_power_arbitor.js"></script>
+    <script src="SD_WLAN/js/toast.js"></script>
+
+    <script src="SD_WLAN/js/dsair_meter_base.js"></script>
+    <script src="SD_WLAN/js/dsair_circular_meter.js"></script>
+    <script src="SD_WLAN/js/dsair_meter.js"></script>
+    <script src="SD_WLAN/js/dsair_speed_control.js"></script>
+    <script src="SD_WLAN/js/dsair_meter_control.js"></script>
+    <script src="SD_WLAN/js/dsair_cab_view.js"></script>
+    <script src="SD_WLAN/js/dsair_dialog.js"></script>
+    <script src="SD_WLAN/js/dsair_address_input_dialog.js"></script>
+    <script src="SD_WLAN/js/dsair_cab_control.js"></script>
+
+    <script src="SD_WLAN/js/dsair_analog_control.js"></script>
+    <script src="SD_WLAN/js/dsair_analog_view.js"></script>
+    <script src="SD_WLAN/js/dsair_analog_bar.js"></script>
+    <script src="SD_WLAN/js/dsair_analog_bar_control.js"></script>
+
+    <script src="SD_WLAN/js/dsair_acc_manager.js"></script>
+    <script src="SD_WLAN/js/dsair_acc_control.js"></script>
+    <script src="SD_WLAN/js/dsair_acc_view.js"></script>
+
+    <script src="SD_WLAN/js/dsair_map_control.js"></script>
+    <script src="SD_WLAN/js/dsair_map_tool_view.js"></script>
+    <script src="SD_WLAN/js/dsair_map_panel_view.js"></script>
+
+    <script src="SD_WLAN/js/dsair_cv_control.js"></script>
+    <script src="SD_WLAN/js/dsair_cv_view.js"></script>
+    <script src="SD_WLAN/js/dsair_cvinfo_dialog.js"></script>
+    <script src="SD_WLAN/js/dsair_msg_dialog.js"></script>
+
+    <script src="SD_WLAN/js/dsair_cfg_control.js"></script>
+    <script src="SD_WLAN/js/dsair_cfg_view.js"></script>
+
+    <script src="SD_WLAN/js/dsair_status_control.js"></script>
+    <script src="SD_WLAN/js/dsair_status_view.js"></script>
+
+    <script src="SD_WLAN/js/dsair_sound_control.js"></script>
+    <script src="SD_WLAN/js/dsair_sound_view.js"></script>
+
+    <script src="SD_WLAN/js/tab_control.js"></script>
+    <script src="SD_WLAN/js/dsair_main.js"></script>
+    <script src="SD_WLAN/js/user.js"></script>
+</head>
+
+<body onload="onLoad()" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);" translate="no">
+
+    <div id="dialogAL" title="Input dialog">
+        <form>
+            <p id="dialogAL_msg">
+                <input name="DblAddr" type="text" id="DblAddr" readonly="readonly" />
+            </p>
+        </form>
+    </div>
+
+    <div id="dialogMsg" title="Information">
+        <form>
+            <p style="display:none;" id="dialogMsg_msg">
+            </p>
+        </form>
+    </div>
+
+    <div id="dialogCVInfo" title="CV Information">
+        <form>
+            <p style="display:none;" id="dialogCVInfo_msg">
+                <input name="cvValue" type="text" id="cvValue" readonly="readonly" />
+            </p>
+        </form>
+    </div>
+
+    <div id="fileSelection" title="File selection">
+        <form>
+            <p style="display:none;" id="fileSelectionList">
+            </p>
+        </form>
+    </div>
+
+    <div id="tabcontrol" style='clear:both;padding:0px;'>
+        <ul id="tabcontrol">
+            <li>
+                <a href="#tab-cab"><img src="/SD_WLAN/img/icon_meter.png" id="tab_icon" title="Cab"></a>
+            </li>
+            <li>
+                <a href="#tab-ana"><img src="/SD_WLAN/img/icon_alalog.png" id="tab_icon" title="Analog"></a>
+            </li>
+            <li>
+                <a href="#tab-acc"><img src="/SD_WLAN/img/icon_signal.png" id="tab_icon" title="Accessory"></a>
+            </li>
+            <li>
+                <a href="#tab-map"><img src="/SD_WLAN/img/icon_map.png" id="tab_icon" title="Layout"></a>
+            </li>
+            <li>
+                <a href="#tab-cv"><img src="/SD_WLAN/img/icon_cpu.png" id="tab_icon" title="CV"></a>
+            </li>
+            <li>
+                <a href="#tab-cfg"><img src="/SD_WLAN/img/icon_cfg.png" id="tab_icon" title="Config"></a>
+            </li>
+            <li>
+                <a href="#tab-sta"><img src="/SD_WLAN/img/icon_key.png" id="tab_icon" title="Status"></a>
+            </li>
+            <li>
+                <a href="#tab-snd"><img src="/SD_WLAN/img/icon_sound.png" id="tab_icon" title="Sound"></a>
+            </li>
+        </ul>
+        <div id="detail">
+            <div id="tab-cab" style="width:900px;height:410px;padding:2px;">
+
+                <div id="funcbox1">
+                    <input type="checkbox" id="check0" onclick="onClickFunction(0)"></input>
+                    <label for="check0" style="font-size:1.5em;width:75px;"><span class="ui-icon ui-icon-lightbulb"
+                            style="font-size:1em;"></span>F0 </label>
+                    <input type="checkbox" id="check1" onclick="onClickFunction(1)">
+                    <label for="check1" style="font-size:1.5em;width:75px;">F1 </label>
+                    <input type="checkbox" id="check2" onclick="onClickFunction(2)">
+                    <label for="check2" style="font-size:1.5em;width:75px;">F2 </label>
+                    <input type="checkbox" id="check3" onclick="onClickFunction(3)">
+                    <label for="check3" style="font-size:1.5em;width:75px;">F3 </label>
+                    <input type="checkbox" id="check4" onclick="onClickFunction(4)">
+                    <label for="check4" style="font-size:1.5em;width:75px;">F4 </label>
+                    <input type="checkbox" id="check5" onclick="onClickFunction(5)">
+                    <label for="check5" style="font-size:1.5em;width:75px;">F5 </label>
+                    <input type="checkbox" id="check6" onclick="onClickFunction(6)">
+                    <label for="check6" style="font-size:1.5em;width:75px;">F6 </label>
+                    <input type="checkbox" id="check7" onclick="onClickFunction(7)">
+                    <label for="check7" style="font-size:1.5em;width:75px;">F7 </label>
+                    <input type="checkbox" id="check8" onclick="onClickFunction(8)">
+                    <label for="check8" style="font-size:1.5em;width:75px;">F8 </label>
+                    <input type="checkbox" id="check9" onclick="onClickFunction(9)">
+                    <label for="check9" style="font-size:1.5em;width:75px;">F9 </label>
+                    <input type="checkbox" id="check10" onclick="onClickFunction(10)">
+                    <label for="check10" style="font-size:1.5em;width:75px;">F10</label>
+                    <input type="checkbox" id="check11" onclick="onClickFunction(11)">
+                    <label for="check11" style="font-size:1.5em;width:75px;">F11</label>
+                    <input type="checkbox" id="check12" onclick="onClickFunction(12)">
+                    <label for="check12" style="font-size:1.5em;width:75px;">F12</label>
+                    <input type="checkbox" id="check13" onclick="onClickFunction(13)">
+                    <label for="check13" style="font-size:1.5em;width:75px;">F13</label>
+                    <input type="checkbox" id="check14" onclick="onClickFunction(14)">
+                    <label for="check14" style="font-size:1.5em;width:75px;">F14</label>
+                    <input type="checkbox" id="check15" onclick="onClickFunction(15)">
+                    <label for="check15" style="font-size:1.5em;width:75px;">F15</label>
+                    <input type="checkbox" id="check16" onclick="onClickFunction(16)">
+                    <label for="check16" style="font-size:1.5em;width:75px;">F16</label>
+                    <input type="checkbox" id="check17" onclick="onClickFunction(17)">
+                    <label for="check17" style="font-size:1.5em;width:75px;">F17</label>
+                    <input type="checkbox" id="check18" onclick="onClickFunction(18)">
+                    <label for="check18" style="font-size:1.5em;width:75px;">F18</label>
+                    <input type="checkbox" id="check19" onclick="onClickFunction(19)">
+                    <label for="check19" style="font-size:1.5em;width:75px;">F19</label>
+                    <input type="checkbox" id="check20" onclick="onClickFunction(20)">
+                    <label for="check20" style="font-size:1.5em;width:75px;">F20</label>
+                    <input type="checkbox" id="check21" onclick="onClickFunction(21)">
+                    <label for="check21" style="font-size:1.5em;width:75px;">F21</label>
+                    <input type="checkbox" id="check22" onclick="onClickFunction(22)">
+                    <label for="check22" style="font-size:1.5em;width:75px;">F22</label>
+                    <input type="checkbox" id="check23" onclick="onClickFunction(23)">
+                    <label for="check23" style="font-size:1.5em;width:75px;">F23</label>
+                    <input type="checkbox" id="check24" onclick="onClickFunction(24)">
+                    <label for="check24" style="font-size:1.5em;width:75px;">F24</label>
+                    <input type="checkbox" id="check25" onclick="onClickFunction(25)">
+                    <label for="check25" style="font-size:1.5em;width:75px;">F25</label>
+                    <input type="checkbox" id="check26" onclick="onClickFunction(26)">
+                    <label for="check26" style="font-size:1.5em;width:75px;">F26</label>
+                    <input type="checkbox" id="check27" onclick="onClickFunction(27)">
+                    <label for="check27" style="font-size:1.5em;width:75px;">F27</label>
+                    <input type="checkbox" id="check28" onclick="onClickFunction(28)">
+                    <label for="check28" style="font-size:1.5em;width:75px;">F28</label>
+                </div>
+
+                <div id="meter" style="margin:2px 18px 2px 2px;float:left;">
+                    <canvas id="myCanvas" width="400" height="400" style="background-color:#FFFFFF;"></canvas>
+                </div>
+
+                <div style="float:left;margin:2px;">
+
+                    <button id="powerOn" onclick="onClickPon(1)" style="font-size:1.5em;">
+                        <span class="ui-icon ui-icon-power" style="font-size:1em;"></span>PowerOn</button>
+                    <button id="powerOff" onclick="onClickPon(0)" style="font-size:1.5em;">
+                        <span class="ui-icon ui-icon-power" style="font-size:1em;"></span>PowerOff</button>
+
+                    <p>
+                        <div id="addrselector">
+                            <input type="radio" id="radio_adr1" name="radio_adr" onclick="onSelectLoc()" value="0"
+                                checked="checked" />
+                            <label for="radio_adr1" id="radio_adr1_label">3</label>
+                            <input type="radio" id="radio_adr2" name="radio_adr" onclick="onSelectLoc()" value="1" />
+                            <label for="radio_adr2" id="radio_adr2_label"></label>
+                            <br />
+                            <input type="radio" id="radio_adr3" name="radio_adr" onclick="onSelectLoc()" value="2" />
+                            <label for="radio_adr3" id="radio_adr3_label"></label>
+                            <input type="radio" id="radio_adr4" name="radio_adr" onclick="onSelectLoc()" value="3" />
+                            <label for="radio_adr4" id="radio_adr4_label"></label>
+                        </div>
+                    </p>
+
+                    <p>
+                        <button id="btnAddLoc" onclick="onClickAddLoc()">
+                            <span class="ui-icon ui-icon-gear" style="font-size:1.2em;"></span>Edit</button>
+
+                        <input type="checkbox" id="checkDblHeading" onclick="onSetDoubleHeading()">
+                        <label for="checkDblHeading"><span class="ui-icon ui-icon-seek-next"></span>DblHead</label>
+
+                    </p>
+
+                    <p>
+                        <button id="btnStop" onclick="onClickStop()" style="font-size:1.5em;">
+                            <span class="ui-icon ui-icon-alert" style="font-size:1em;"></span>STOP</button>
+                    </p>
+
+                    <p>
+                        <button id="btnRev" onclick="onClickFwd(2)">
+                            <span class="ui-icon ui-icon-triangle-1-s" style="font-size:1.5em;"></span>R</button>
+                        <button id="btnFwd" onclick="onClickFwd(1)">
+                            <span class="ui-icon ui-icon-triangle-1-n" style="font-size:1.5em;"></span>F</button>
+                        <input type="checkbox" id="checkDirReverse" onclick="onSetDirReverse()">
+                        <label for="checkDirReverse">
+                            <span class="ui-icon ui-icon-transferthick-e-w" style="font-size:1em;"></span>
+                        </label>
+                    </p>
+
+
+                    <p id="logo">
+                        <img src="SD_WLAN/c/logo.gif">
+                    </p>
+                </div>
+            </div>
+
+            <div id="tab-ana" style="width:900px;height:410px;padding:2px;">
+                <p id="speedslider_frame">
+                    <canvas id="speedobar" width="120" height="320"></canvas><br />
+                    <button onclick="ANA_Stop()" id="AnaStopButton"><span class="ui-icon ui-icon-stop" style="font-size:2em;"></span>STOP</button>
+                </p>
+
+                <p id="analogcab_Mode">
+                    <input type="text" id="ANA_SPEED-value"></input><br />
+                    <input type="text" id="ANA_SPEED-option"></input><br />
+                    <br />
+                    <input type="checkbox" id="btnAnaLight" onclick="onClickAnalogLight()"></input>
+                    <label for="btnAnaLight" id="btnAnaLight_lbl"><span class="ui-icon ui-icon-lightbulb" style="font-size:1.5em;"></span></label>
+                    <br />
+                    <input type="checkbox" id="btnAnaSlow" onclick="onClickAnalogSlowMotion()"></input>
+                    <label for="btnAnaSlow" id="btnAnaSlow_lbl"><span class="ui-icon ui-icon-link" style="font-size:1.5em;"></span></label>
+                    <br />
+
+
+
+
+                    <input type="text" id="ANA_SPEED-option2"></input><br />
+                    <input type="checkbox" id="btnAnaFwd" onclick="ANA_Fwd(1)">
+                    <label for="btnAnaFwd" id="btnAnaFwd_lbl"><span class="ui-icon ui-icon-triangle-1-n" style="font-size:1.5em;"></span>Fwd</label></input><br />
+                    <input type="checkbox" id="btnAnaRev" onclick="ANA_Fwd(2)">
+                    <label for="btnAnaRev" id="btnAnaRev_lbl"><span class="ui-icon ui-icon-triangle-1-s" style="font-size:1.5em;"></span>Rev</label></input>
+                </p>
+
+                <div id="analogcab_max">
+                    <p>Max<br />Voltage</p>
+                    <div id='ANA_MaxVoltage'></div>
+                    <input type="text" id="ANA_MaxVoltage-value"></input>
+                </div>
+                <div id="analogcab_etc">
+                    <p>Light<br />Level</p>
+                    <div id='ANA_LightThred'></div>
+                    <input type="text" id="ANA_LightThred-value"></input>
+                </div>
+                <div id="analogcab_spdurve">
+                    <p>Speed Curve<br /><br /></p>
+                    <input type="checkbox" id="btnModeC1" onclick="ANA_Mode(1)"><label for="btnModeC1"><img src="/SD_WLAN/img/ANA_MODE_C1.png"
+                            width="70"></label></input><br />
+                    <input type="checkbox" id="btnModeC2" onclick="ANA_Mode(2)"><label for="btnModeC2"><img src="/SD_WLAN/img/ANA_MODE_C2.png"
+                            width="70"></label></input><br />
+                    <input type="checkbox" id="btnModeC3" onclick="ANA_Mode(3)"><label for="btnModeC3"><img src="/SD_WLAN/img/ANA_MODE_C3.png"
+                            width="70"></label></input><br />
+                </div>
+
+                <div id="analogcab_light">
+                </div>
+
+                <p id="ANA_POWER"><span class="ui-icon ui-icon-power" style="font-size:2em;color:grey;" id="ANA_PowerIcon"></span><br />POWER</p>
+
+                <p id="analog_logo">
+                    <img src="SD_WLAN/img/dc_analog_logo.png"> <img src="/SD_WLAN/c/logo.gif">
+                </p>
+            </div>
+
+            <div id="tab-acc" style="width:900px;height:410px;padding:2px;">
+
+                <div style="float: left;">
+                    <input type="checkbox" id="checkAccEditMode" onclick="onSetAccEdit()">
+                    <label for="checkAccEditMode" style="width:120px;"><span class="ui-icon ui-icon-gear" style="font-size:1em;"></span>Edit</label>
+                </div>
+
+                <div style="float:top;margin:4px;text-align:right;">
+                    <button id="btnAccPageUp" onclick="onClickAccPage(0)" style="width:150px;">
+                        <span class="ui-icon ui-icon-triangle-1-n" style="font-size:1.5em;"></span>UP</button>
+                    <button id="btnAccPageDown" onclick="onClickAccPage(1)" style="width:150px;">
+                        <span class="ui-icon ui-icon-triangle-1-s" style="font-size:1.5em;"></span>DOWN</button>
+                </div>
+
+
+                <canvas id="accCanvas" width="900" height="365" style="background-color:#FFFFFF;"></canvas>
+                <br />
+
+            </div>
+
+            <div id="tab-map" style="width:900px;height:410px;padding:2px;">
+
+                <div style="float: left;">
+                    <button id="checkMapSave" onclick="onClickSaveMaps()">
+                        <label for="checkMapSave" style="width:120px;"><span class="ui-icon ui-icon-gear" style="font-size:1em;"></span>Save</label>
+                    </button>
+                    <button id="checkMapDownload" onclick="onClickDownloadMaps()">
+                        <label for="checkMapDownload" style="width:120px;"><span style="font-size:1em;"></span>Download</label>
+                    </button>
+                    <button id="checkMapUpload" onclick="onClickUploadMaps()">
+                        <label for="checkMapUpload" style="width:120px;"><span style="font-size:1em;"></span>Upload</label>
+                    </button>
+                </div>
+                <div style="float:top;text-align:right;">
+
+                    <label id="labelMapMsg"></label>
+
+                    <button id="checkMapClear" onclick="onClickClearMaps()">
+                        <label for="checkMapClear" style="width:120px;"><span class="ui-icon ui-icon-newwin" style="font-size:1em;"></span>Clear</label>
+                    </button>
+                </div>
+
+                <div style="float: left;">
+                    <div id="mapboxTool">
+                        <canvas id="mapCanvasTool" width="96" height="576" style="background-color:#FFFFFF;"></canvas>
+                    </div>
+
+                    <div id="mapboxMain">
+                        <canvas id="mapCanvasMain" width="4800" height="2400" style="background-color:#FFFFFF;"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="tab-cv" style="width:900px;height:410px;padding:2px;">
+
+                <div style="float:left;margin:1em;padding:1em;">
+                    <label for="CVList" id="CVListLabel">CV List</label><br />
+                    <select id="CVList">
+                    </select>
+                    <p>
+                        <label id="CVDescription">Description</label>
+                    </p>
+                </div>
+
+
+                <div style="margin:1em;padding:1em;">
+                    <label for="CVValue" id="CVValueLabel">CV Value</label><br />
+                    <input id="CVValue" type="text">
+                    <button id="CVValEditBtn" onclick="OpenCVValEdit()">Change</button><br />
+                    <label id="ReadCVValue">---</label>
+                </div>
+
+                <div style="float:right;margin:1em;padding:1em;">
+
+                    <button id="CVReaderBtn" onclick="onClickCVRead()">
+                        <label for="CVReaderBtn" style="width:120px;"><span class="ui-icon ui-icon-arrowthick-1-n"
+                                style="font-size:1em;"></span>Read</label>
+                    </button>
+                    <button id="CVWriterBtn" onclick="onClickCVWrite()">
+                        <label for="CVWriterBtn" style="width:120px;"><span class="ui-icon ui-icon-arrowthickstop-1-s"
+                                style="font-size:1em;"></span>Write</label>
+                    </button>
+                    <p>When wrote CV, the locomotive may run at the moment.</p>
+
+                </div>
+
+                <img src="SD_WLAN/img/icon_cvwrite.png" style="margin:2em;">
+
+
+            </div>
+
+            <div id="tab-cfg" style="width:900px;height:410px;padding:2px;">
+                <fieldset style="width:360px;float:left;">
+                    <legend>Wifi Config</legend>
+                    <div class="formarea">
+                        <p style="margin:0;padding:0.1em;">
+                            Master Code:
+                            <span id="mastercode"></span>
+                            <br>
+                            SSID:
+                            <br>
+                            <input name="appssid" id="appssid" type="text" value="" maxlength="32" />
+                            <br />
+                            Password:
+                            <br>
+                            <input name="appnetworkkey" id="appnetworkkey" type="text" value="" maxlength="63" />
+                            <br>
+                        </p>
+                        <p style="float:right;margin-right:1em;">
+                            <button id="submit">submit</button>
+                            <span id="result"></span>
+                        </p>
+                    </div>
+                </fieldset>
+
+                <fieldset style="width:360px;float:none;">
+                    <legend>Information</legend>
+                    <div class="formarea2">
+                        <p style="text-align: center;">
+                            <img src="SD_WLAN/img/DSair_logo3.png" width="290"><br />
+                        </p>
+                        <p style="text-align: center;">
+                            <label id="status_firmver">Firmware:</label>
+                        </p>
+                    </div>
+                </fieldset>
+
+                <fieldset style="width:360px;float:left;">
+                    <legend>Etc</legend>
+                    <div class="formarea2">
+                        <p>
+                            Display Max Speed:
+                            <span id="maxspeed_label"></span> km/h
+                            <br>
+                            <div style="width:300px;">
+                                <div id="maxspeed_slider"></div>
+                            </div>
+
+                        </p>
+                    </div>
+                </fieldset>
+
+                <fieldset style="width:360px;float:none;">
+                    <legend>Protocol</legend>
+                    <div class="formarea2">
+                        <div id="protcolset_acc" style="float:left;margin-right:1em;">
+                            <p style="margin:0;padding:0.1em;">
+                                <label style="width:120px;">Accessory</label>
+                                <input type="radio" id="radio1a" name="radio_acc" onclick="onSelectAccProtocol()" value="1"
+                                    checked="checked" />
+                                <label for="radio1a">DCC</label>
+                                <input type="radio" id="radio2a" name="radio_acc" onclick="onSelectAccProtocol()" value="2" />
+                                <label for="radio2a">MM2</label>
+                            </p>
+                        </div>
+
+                        <div id="protcolset">
+                            <p style="margin:0;padding:0.1em;">
+                                <label style="width:120px;">Locomotive</label>
+                                <input type="radio" id="radio1" name="radio_loc" onclick="onSelectProtocol()" value="1"
+                                    checked="checked" />
+                                <label for="radio1">DCC</label>
+                                <input type="radio" id="radio2" name="radio_loc" onclick="onSelectProtocol()" value="2" />
+                                <label for="radio2">MM2</label>
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="tab-sta" style="width:900px;height:410px;padding:2px;">
+                <fieldset style="width:480px;float:none;">
+                    <legend>DSair Status</legend>
+                    <div class="formarea2">
+                        <p style="margin:0;padding:0.1em;">
+                            <label style="width:120px;"></label><br />
+                            <label id="status_volt">Track Voltage:</label><br />
+                            <label id="status_current">Output Current:</label><br />
+                            <label id="status_error">Error:</label><br />
+                            <label id="status_power">Power:</label><br />
+                            <label id="status_locs">Controlled Loc nums:</label><br />
+                            <br />
+                            <label id="status_hardver">Hardware:</label><br />
+                            <label id="status_seqno">Alive Seq:</label><br />
+                            <label id="status_replymsg">Reply Msg:</label><br />
+                            <label id="status_replyacc">Reply Acc:</label><br />
+
+                        </p>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="tab-snd" style="width:900px;height:410px;padding:2px;">
+                <fieldset style="width:480px;float:left;">
+                    <legend>Sound List</legend>
+                    <div class="formarea2">
+                        <div class="soundbutton">
+                            <div id="soundlist">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div style="margin:1em;float:right;">
+                    <button onclick="stopSound()" id="SoundStopButton"><span class="ui-icon ui-icon-stop" style="font-size:2em;"></span><br />SOUND
+                        STOP</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
