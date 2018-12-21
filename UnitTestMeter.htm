@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>DSair Meter UnitTest</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="height=device-height,width=device-width,height=device-height,initial-scale=1.0" />
+    <meta name="author" content="Desktop Station Co.,Ltd.">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="apple-touch-icon" href="./c/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="./c/favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="stylesheet" href="./c/jqui.css" />
+    <link rel="stylesheet" href="./c/jquery-ui-1.12.icon-font.min.css" />    
+    <link rel="stylesheet" href="./css/dsair.css" />
+
+    <style type="text/css">
+    </style>
+    <script>
+        'use strict';
+    </script>
+    <script src="./js/inherits.js"></script>
+    <script src="./js/dsair_globals.js"></script>
+    <script src="./js/dsair_cab_control.js"></script>
+    <script src="./mock/dsair_cab_control_mock.js"></script>
+    <script src="./js/dsair_meter_base.js"></script>
+    <script src="./js/dsair_circular_meter.js"></script>
+    <script src="./js/dsair_meter.js"></script>
+    <script src="./js/dsair_meterJNR.js"></script>
+    <script src="./js/dsair_speed_control.js"></script>
+    <script src="./js/dsair_meter_control.js"></script>
+    <script>
+        var app = {
+            cabController: new DsairCabControlMock(),
+            meter1: new DsairMeter('meterCanvas1'),
+            meter2: new DsairMeterJNR('meterCanvas2'),
+            meterController: new DsairMeterControl(),
+        };
+        console.log('here');
+        app.cabController.addSpeedMeter(app.meter1);
+        app.cabController.addSpeedMeter(app.meter2);
+        app.meterController.addCabController(app.cabController);
+        app.meter1.addMeterController(app.meterController);
+        app.cabController._meterMaxSpeed = 120;
+    </script>
+</head>
+
+<body style="-webkit-tap-highlight-color: rgba(172, 133, 133, 0);" translate="no">
+<div id="tab-cab" style="width:900px;height:410px;padding:2px;">
+    <div id="meter1" style="margin:2px 18px 2px 2px;float:left;">
+        <canvas id="meterCanvas1" width="400" height="400" style="background-color:#FFFFFF;"></canvas>
+    </div>
+    <div id="meter2" style="margin:2px 18px 2px 2px;float:left;">
+        <canvas id="meterCanvas2" width="400" height="400" style="background-color:#7F7F7F;"></canvas>
+    </div>
+</div>
+</body>
+
+</html>
