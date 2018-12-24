@@ -2,6 +2,7 @@
 var DsairMeterBase = function (inCanvasName) {
     this._canvasName = inCanvasName;
     this._meterController = null;
+    this._loaded = false;
     window.addEventListener('load', this);
 };
 
@@ -18,6 +19,7 @@ DsairMeterBase.prototype.handleEvent = function (e) {
 };
 
 DsairMeterBase.prototype.onLoad = function() {
+    this._loaded = true;
     this._setControlInfo();
 };
 

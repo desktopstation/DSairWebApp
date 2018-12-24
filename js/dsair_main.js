@@ -75,6 +75,7 @@ dsairApp.analogBar.addMeterController(dsairApp.analogBarController);
 dsairApp.accManager.addDsairCommand(dsairApp.command);
 dsairApp.accManager.addStorage(dsairApp.storage);
 dsairApp.accManager.addCfgControl(dsairApp.configController);
+dsairApp.powerArbitor.addPowerStateChangeCallback(dsairApp.accManager);
 
 dsairApp.accController.addStorage(dsairApp.storage);
 dsairApp.accController.addAccManager(dsairApp.accManager);
@@ -87,6 +88,7 @@ dsairApp.mapController.addPanelView(dsairApp.mapPanelView);
 dsairApp.mapController.addAccManager(dsairApp.accManager);
 dsairApp.mapController.addMsgDialog(dsairApp.mapMsgDialog);
 dsairApp.mapController.addAddressInputDialog(dsairApp.mapAddressDialog);
+dsairApp.mapController.addFileSelectionDialog(dsairApp.mapFileSelectionDialog);
 dsairApp.mapController.addDsairCommand(dsairApp.command);
 dsairApp.mapController.addToast(dsairApp.toast);
 
@@ -190,8 +192,16 @@ var onClickDownloadMaps = function() {
     dsairApp.mapController.download();
 };
 
+var onClickSaveFlashair = function() {
+    dsairApp.mapController.saveFlashair();
+};
+
 var onClickUploadMaps = function() {
     dsairApp.mapController.upload();
+};
+
+var onClickLoadFlashair = function() {
+    dsairApp.mapController.loadFlashair();
 };
 
 var onClickClearMaps = function () {

@@ -6,6 +6,7 @@ var DsairMapControl = function () {
     this._accManager = null;
     this._msgDialog = null;
     this._addressInputDialog = null;
+    this._fileSelectionDialog = null;
     this._command = null;
     this._toast = null;
 
@@ -55,6 +56,10 @@ DsairMapControl.prototype.addMsgDialog = function (inDialog) {
 
 DsairMapControl.prototype.addAddressInputDialog = function (inDialog) {
     this._addressInputDialog = inDialog;
+};
+
+DsairMapControl.prototype.addFileSelectionDialog = function (inDialog) {
+    this._fileSelectionDialog = inDialog;
 };
 
 DsairMapControl.prototype.addDsairCommand = function (inCommand) {
@@ -201,6 +206,13 @@ DsairMapControl.prototype.download = function () {
     this._dsairCommand.download(this._mapFilename, jsonObj);
 };
 
+DsairMapControl.prototype.saveFlashair = function () {
+    this._fileSelectionDialog.open(this, 'saveFlashairCallback');
+};
+
+DsairMapControl.prototype.saveFlashairCallback = function () {
+};
+
 DsairMapControl.prototype.upload = function () {
     console.log('upload');
     this._dsairCommand.upload(this, 'uploadCallback', '.json, text/plain');
@@ -216,6 +228,13 @@ DsairMapControl.prototype.uploadCallback = function (data, filename) {
         console.info(e);
     }
     this._onDataLoad(parsedObj);
+};
+
+DsairMapControl.prototype.loadFlashair = function () {
+    this._fileSelectionDialog.open(this, 'loadFlashairCallback');
+};
+
+DsairMapControl.prototype.loadFlashairCallback = function () {
 };
 
 DsairMapControl.prototype.onActivate = function () {

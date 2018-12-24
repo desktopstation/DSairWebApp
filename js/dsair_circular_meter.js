@@ -405,7 +405,9 @@ DsairCircularMeter.prototype.onDrawMeter = function (inValue, inLocDir) {
     }
     this._locSpeed = inValue;
     this._locDir = inLocDir;
-    this._drawMeter();
+    if (this._loaded) {
+        this._drawMeter();
+    }
 };
 
 DsairCircularMeter.prototype.setMeterMaxValue = function (inMeterMaxValue) {
