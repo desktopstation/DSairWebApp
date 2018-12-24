@@ -60,7 +60,7 @@ var DsairCabControl = function () {
 //
 DsairCabControl.prototype._locProtocolList = [];
 DsairCabControl.prototype._locProtocolList[DsairConst.protocolMM2] = 0;
-DsairCabControl.prototype._locProtocolList[DsairConst.protocolDCC] = 41952;
+DsairCabControl.prototype._locProtocolList[DsairConst.protocolDCC] = 49152;
 
 DsairCabControl.prototype._defaultLocProtocol = DsairConst.protocol;
 DsairCabControl.prototype._defaultLocMeterMaxSpeed = 240;
