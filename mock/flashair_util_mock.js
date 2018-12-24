@@ -285,8 +285,12 @@ FlashairUtilMock.prototype._jsonData = `
 	]
 }
 `;
-FlashairUtilMock.prototype._fileList = `WLANSD_FILELIST
+
+
+FlashairUtilMock.prototype._fileListRoot = `WLANSD_FILELIST
 ,DCIM,0,16,19011,0
+,hiddenFile,0,16,19011,0
+,otherExt,0,16,19011,0
 ,vorbeifahrender Zug lang01.mp3,1016164,32,19846,14501
 ,BaustelleSignalhorn.mp3,116667,32,19846,14500
 ,Bhf - Pfiff65.mp3,24285,32,19846,14500
@@ -300,8 +304,69 @@ FlashairUtilMock.prototype._fileList = `WLANSD_FILELIST
 ,Typhon.mp3,61884,32,19846,14500
 `;
 
+FlashairUtilMock.prototype._fileListDCIM =  `WLANSD_FILELIST
+/DCIM,100__TSB,0,16,9944,129
+/DCIM,0126_1.jpg,70408,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListDCIM_TSB =  `WLANSD_FILELIST
+/DCIM/100__TSB,subsubdir.mp3,70408,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListHiddenFile = `WLANSD_FILELIST
+/hiddenFile,hidden1.mp3,1024,34,17071,28040
+/hiddenFile,normal1.mp3,2048,32,17071,28040
+/hiddenFile,hidden2.mp3,4096,2,17071,28040
+/hiddenFile,normal2.mp3,8192,0,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListOtherExt = `WLANSD_FILELIST
+/otherExt,noext,2048,32,17071,28040
+/otherExt,.dot.dot,2048,32,17071,28040
+/otherExt,wavefile.wav,2048,32,17071,28040
+/otherExt,textfile.txt,2048,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListMP3Ext = `WLANSD_FILELIST
+/MP3Ext,mp3file1.mp3,2048,32,17071,28040
+/MP3Ext,mp3file2.mP3,2048,32,17071,28040
+/MP3Ext,mp3file3.Mp3,2048,32,17071,28040
+/MP3Ext,mp3file4.MP3,2048,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileList = {
+	'/': FlashairUtilMock.prototype._fileListRoot,
+	'/DCIM': FlashairUtilMock.prototype._fileListDCIM,
+	'/DCIM/100__TSB': FlashairUtilMock.prototype._fileListDCIM_TSB,
+	'/hiddenFile': FlashairUtilMock.prototype._fileListHiddenFile,
+	'/otherExt': FlashairUtilMock.prototype._fileListOtherext,
+	'/MP3Ext': FlashairUtilMock.prototype._fileListMP3Ext
+};
+
+
 FlashairUtilMock.prototype.httpRequest = function (httpMethod, url/*, respCb, errCb*/) {
 	console.info('request "%s %s"', httpMethod, url);
+};
+
+FlashairUtilMock.prototype.getFileList = function (args) {
+	let argList = args.split('&');
+	let fileList = null;
+	for (let arg of argList) {
+		let param = arg.split('=');
+		if (param[0] == 'DIR') {
+			if (param[1] in this._fileList) {
+				fileList = this._fileList[param[1]];
+			} else {
+				console.info('unknown directory %s', param[1]);
+			}
+		} else {
+			console.info('unknown parameter %s', arg);
+		}
+	}
+	if (fileList == null) {
+		fileList = this._fileList['/'];
+	}
+	return fileList;
 };
 
 FlashairUtilMock.prototype.requestSimpleCommand = function (op, option, respCb, errCb) {
@@ -310,7 +375,7 @@ FlashairUtilMock.prototype.requestSimpleCommand = function (op, option, respCb, 
 	let respStr = '';
 	switch (op) {
 		case 100:	// file list
-			respStr = this._fileList;
+			respStr = this.getFileList(option);
 			break;
 		case 104:	// SSID
 			respStr = this._appSSID;
@@ -478,13 +543,14 @@ FlashairUtilMock.prototype.setCV = function (/*args*/) {
 
 FlashairUtilMock.prototype.writeShmem = function (start, length, param, respCb, errCb) {
 	this.super.writeShmem.call(this, start, length, param, respCb, errCb);
+	let shmParam;
 	if (param.length < length) {
-		param += this._initVal.repeat(length - param.length);
+		shmParam = param + this._initVal.repeat(length - param.length);
 	} else if (param.length > length) {
-		param = param.substr(0, length);
+		shmParam = param.substr(0, length);
 	}
 	this._sharedMemory = this._sharedMemory.substr(0, start) +
-		param + this._sharedMemory.substr(start + length);
+		shmParam + this._sharedMemory.substr(start + length);
 	if (start != 0) {
 		// コマンドではない
 		return;
