@@ -4,17 +4,17 @@ var DsairSoundControl = function () {
     this._view = null;
 
     this._audioElem = null;
-    // let path = location.pathname;
-    // console.log(path);
-    // let index = path.lastIndexOf('/');
-    // if (index >= 0) {
-    //     this._currentPath = path.substr(0, index);
-    // } else {
-    //     console.info('invalid pathname "%s"', path);
-    //     this._currentPath = '/';
-    // }
-    this._currentPath = '/';
-    console.log(this._currentPath);
+    //let path = location.pathname;
+    //console.log(path);
+    //let index = path.lastIndexOf('/');
+    //if (index >= 0) {
+    //    this._currentPath = path.substr(0, index);
+    //} else {
+    //    console.info('invalid pathname "%s"', path);
+    //    this._currentPath = '/';
+    //}
+     this._currentPath = '/';
+    //console.log(this._currentPath);
     this._nextPath = '';
 
     this._wlansd = new Array();
@@ -133,7 +133,16 @@ DsairSoundControl.prototype.getFileListCallback = function (data) {
 
 DsairSoundControl.prototype.playSound = function (n) {
     console.log('play', n);
-    this._audioElem.src = this._currentPath + '/' + this._wlansd[n].fname;
+    
+    if( this._currentPath == "/")
+    {
+    	this._audioElem.src = this._wlansd[n].fname;
+    }
+    else
+    {
+    	this._audioElem.src = this._currentPath + '/' + this._wlansd[n].fname;
+    }
+    
     //console.log('play %d %s', n, this._wlansd[n].fname);
     try {
         this._audioElem.play();
