@@ -433,6 +433,13 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
                 if (aPower_Num == DsairConst.powerOff) {
                     this._powerArbitor.powerOff(this._name);
                 }
+                else
+                {
+                    console.log('(Remoted)On');
+                    if (!this._powerArbitor.tryPowerOn(this._name)) {
+                        this._toast.show('Please turn off analog mode.');
+                    }                
+                }
             }
         }
     }
@@ -704,11 +711,11 @@ DsairCabControl.prototype.onPowerStateChange = function (inName, inPower) {
         this._powerStatus = DsairConst.powerOff;
     }
     if (this._powerStatus == DsairConst.powerOff) {
-        this.onClickStop();
+        //this.onClickStop(); 
         this._powerStatus = DsairConst.powerOff;       
-        this.initFuncStatus();
+        //this.initFuncStatus();
         this._dsairCabView.UpdateFunctionButtonsAll();
-        this._locDistInfo = [];
+        //this._locDistInfo = [];
     }
     //console.log('status = %d', this._powerStatus);
     this._dsairCabView.setVisibleItems(this._powerStatus);
