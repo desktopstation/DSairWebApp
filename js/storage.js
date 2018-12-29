@@ -103,7 +103,7 @@ Storage.prototype.SaveTypeImagesAcc = function (AccTypes) {
 	this.Save();
 	this._AccTypes = AccTypes;
 	localStorage.setItem('ACCTYPEIMAGES', this._AccTypes.join(','));
-}
+};
 
 Storage.prototype.SaveMapDatas = function (MapAccAddr, MapImage, MapWidth, MapHeight) {
 	this.Save();
@@ -115,7 +115,7 @@ Storage.prototype.SaveMapDatas = function (MapAccAddr, MapImage, MapWidth, MapHe
 	localStorage.setItem('MAPDAT-IMAGE', this._MapImage.join(','));
 	localStorage.setItem('MAPDAT-WIDTH', this._MapWidth);
 	localStorage.setItem('MAPDAT-HEIGHT', this._MapHeight);
-}
+};
 
 //
 
@@ -176,11 +176,11 @@ Storage.prototype.LoadTypeImagesAcc = function () {
 		return;
 	}
 
-	var aAccImageArray_str = localStorage.getItem('ACCTYPEIMAGES');
+	let aAccImageArray_str = localStorage.getItem('ACCTYPEIMAGES');
 
 	if (aAccImageArray_str != null) {
 
-		var aAccImageArray_strarray = aAccImageArray_str.split(',');
+		let aAccImageArray_strarray = aAccImageArray_str.split(',');
 
 		this._AccTypes = [];
 		for (let accType of aAccImageArray_strarray) {
@@ -201,7 +201,7 @@ Storage.prototype.LoadMapDatas = function () {
 		return;
 	}
 
-	var aAccAddrArray_str = localStorage.getItem('MAPDAT-ACCADDR');
+	let aAccAddrArray_str = localStorage.getItem('MAPDAT-ACCADDR');
 
 	if (aAccAddrArray_str != null) {
 		var aAccAddrArray_strarray = aAccAddrArray_str.split(',');
@@ -215,7 +215,7 @@ Storage.prototype.LoadMapDatas = function () {
 		}
 	}
 
-	var aMapImgArray_str = localStorage.getItem('MAPDAT-IMAGE');
+	let aMapImgArray_str = localStorage.getItem('MAPDAT-IMAGE');
 
 	if (aMapImgArray_str != null) {
 
@@ -230,15 +230,16 @@ Storage.prototype.LoadMapDatas = function () {
 		}
 	}
 
-	var aMapWidth = localStorage.getItem('MAPDAT-WIDTH');
-	var aMapHeight = localStorage.getItem('MAPDAT-HEIGHT');
+	let aMapWidth = localStorage.getItem('MAPDAT-WIDTH');
+	let aMapHeight = localStorage.getItem('MAPDAT-HEIGHT');
 
+	console.log(aMapWidth, aMapHeight);
 	if (aMapWidth != null) {
-		this._Map_Width = aMapWidth;
+		this._MapWidth = aMapWidth;
 	}
 
 	if (aMapHeight != null) {
-		this._Map_Height = aMapHeight;
+		this._MapHeight = aMapHeight;
 	}
 }
 
