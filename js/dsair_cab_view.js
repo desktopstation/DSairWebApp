@@ -2,7 +2,6 @@ var DsairCabView = function () {
     this._controller = null;
     this._loaded = false;
     this._onSwitch = DsairConst.powerOff;
-    this._needUpdateVisibleItems = false;
     window.addEventListener('load', this);
 };
 
@@ -30,9 +29,8 @@ DsairCabView.prototype.onLoad = function () {
     $('input[type="checkbox"]').button();
     $('input[type="radio"]').button();
     this._loaded = true;
-    if (this._needUpdateVisibleItems) {
-        this._setVisibleItems();
-    }
+    this._setVisibleItems();
+    this.UpdateFunctionButtonsAll();
 };
 
 //
@@ -80,13 +78,12 @@ DsairCabView.prototype._setVisibleItems = function () {
 };
 
 DsairCabView.prototype.setVisibleItems = function (inOnSwitch) {
+    //console.log('state = %s', inOnSwitch == DsairConst.powerOn ? 'On' : 'Off');
     this._onSwitch = inOnSwitch;
-    if (this._loaded) {
-        this._setVisibleItems();
-    } else {
-        // onLoad時に描画
-        this._needUpdateVisibleItems = true;
+    if (!this._loaded) {
+        return;
     }
+    this._setVisibleItems();
 };
 
 DsairCabView.prototype.setLocAddr = function (inModeLocIndex) {
@@ -101,6 +98,9 @@ DsairCabView.prototype.getModeLocIndex = function () {
 }
 
 DsairCabView.prototype.UpdateFunctionButtonsAll = function () {
+    if (!this._loaded) {
+        return;
+    }
     //ファンクションボタンを全て変更する
 
     $('#check0').prop('checked',  (this._controller.getLocFuncStatus(0)  == 1)).change();

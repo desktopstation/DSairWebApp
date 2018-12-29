@@ -78,11 +78,3 @@ DsairAccManager.prototype.onDataLoad = function () {
     aAccProtocol = this.setAccProtocol(aAccProtocol);
     this._configControl.setAccProtocol(aAccProtocol);
 };
-
-DsairAccManager.prototype.onPowerStateChange = function (inOwnerName, inPowerStatus) {
-    if (inPowerStatus == DsairConst.powerOff) {
-        for (let i = 0; i < DsairConst.maxAccessories; i++) {
-            this._AccStatus[i] = 0;
-        }
-    }
-};

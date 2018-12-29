@@ -102,6 +102,8 @@ DsairCabControl.prototype.addStorege = function (inStorege) {
 DsairCabControl.prototype.addDsairCommand = function (inCommand) {
     this._dsairCommand = inCommand;
     this._dsairCommand.addStatusCallback(this);
+    // 初期状態を取得
+    this._dsairCommand.getStatus();
 };
 
 // 速度表示オブジェクトを追加
@@ -523,25 +525,25 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
 
                 if ((this._locSpeed[j] / 4) != aLocSpd) {
                     aMeterChanged = true;
-                    if (this._powerStatus == DsairConst.powerOff) {
-                        this._locSpeed[j] = 0;
-                    } else {
+                    // if (this._powerStatus == DsairConst.powerOff) {
+                    //     this._locSpeed[j] = 0;
+                    // } else {
                         this._locSpeed[j] = aLocSpd * 4;
-                    }
+                    // }
                 }
 
                 for (let k = 0; k < this._numFunctions; k++) {
-                    if (this._powerStatus == DsairConst.powerOff) {
-                        if (this._locFuncStatus[j][k] != 0) {
-                            this._locFuncStatus[j][k] = 0;
-                            aFuncChanged = true;
-                        }
-                    } else {
+                    // if (this._powerStatus == DsairConst.powerOff) {
+                    //     if (this._locFuncStatus[j][k] != 0) {
+                    //         this._locFuncStatus[j][k] = 0;
+                    //         aFuncChanged = true;
+                    //     }
+                    // } else {
                         if (this._locFuncStatus[j][k] != (aLocFunc >> k) & 1) {
                             this._locFuncStatus[j][k] = (aLocFunc >> k) & 1;
                             aFuncChanged = true;
                         }
-                    }
+                    // }
                 }
 
                 // 表示中の場合は更新

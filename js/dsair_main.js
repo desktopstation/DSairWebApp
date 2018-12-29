@@ -75,7 +75,6 @@ dsairApp.analogBar.addMeterController(dsairApp.analogBarController);
 dsairApp.accManager.addDsairCommand(dsairApp.command);
 dsairApp.accManager.addStorage(dsairApp.storage);
 dsairApp.accManager.addCfgControl(dsairApp.configController);
-dsairApp.powerArbitor.addPowerStateChangeCallback(dsairApp.accManager);
 
 dsairApp.accController.addStorage(dsairApp.storage);
 dsairApp.accController.addAccManager(dsairApp.accManager);
