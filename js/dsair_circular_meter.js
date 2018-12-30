@@ -403,6 +403,9 @@ DsairCircularMeter.prototype.onDrawMeter = function (inValue, inLocDir) {
     } else if (inValue > (this._internalMeterRange - 1)) {
         inValue = this._internalMeterRange - 1;
     }
+    if ((this._locSpeed == inValue) && (this._locDir == inLocDir)) {
+        return;
+    }
     this._locSpeed = inValue;
     this._locDir = inLocDir;
     if (this._loaded) {
