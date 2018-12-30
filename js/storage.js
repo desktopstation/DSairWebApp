@@ -241,12 +241,12 @@ Storage.prototype.LoadMapDatas = function () {
 	if (aMapHeight != null) {
 		this._MapHeight = aMapHeight;
 	}
-}
+};
 
 Storage.prototype.Load = function () {
 
 	if (localStorage.getItem('UNIQUEID') == 'DSAIR0001') {
-		//成功
+		// 成功
 		this._gEnableLoad = 1;
 	}
 	else {
