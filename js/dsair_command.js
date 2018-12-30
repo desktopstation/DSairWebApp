@@ -112,9 +112,9 @@ DsairCommand.prototype.setParams = function (mastercode, appssid, appnetworkkey)
 DsairCommand.prototype.setDirection = function (inDir, inLocAddr) {
     let aDir;
     if (inDir == DsairConst.dirFWD) {
-        aDir = 'FWD';
+        aDir = '1';
     } else {
-        aDir = 'REV';
+        aDir = '2';
     }
     //console.log(inLocAddr);
     let aLocAddr = inLocAddr.join('/');
