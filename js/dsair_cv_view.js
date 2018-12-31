@@ -18,7 +18,7 @@ DsairCVView.prototype.handleEvent = function (e) {
 };
 
 DsairCVView.prototype.onLoad = function () {
-    let self = this;
+    var self = this;
     $("#CVList").change(function () {
         self._controller.ChangeCVDescription();
     });

@@ -130,7 +130,7 @@ Storage.prototype.LoadLocAddr = function () {
 
 	if (aLocArray != null) {
 		this._dblLocArray = [];
-		for (let addr of aLocArray.split(',')) {
+		for (var addr of aLocArray.split(',')) {
 			this._dblLocArray.push(parseInt(addr));
 		}
 	} else {
@@ -176,20 +176,20 @@ Storage.prototype.LoadTypeImagesAcc = function () {
 		return;
 	}
 
-	let aAccImageArray_str = localStorage.getItem('ACCTYPEIMAGES');
+	var aAccImageArray_str = localStorage.getItem('ACCTYPEIMAGES');
 
 	if (aAccImageArray_str != null) {
 
-		let aAccImageArray_strarray = aAccImageArray_str.split(',');
+		var aAccImageArray_strarray = aAccImageArray_str.split(',');
 
 		this._AccTypes = [];
-		for (let accType of aAccImageArray_strarray) {
+		for (var accType of aAccImageArray_strarray) {
 			this._AccTypes.push(parseInt(accType));
 		}
 		if (aAccImageArray_strarray.length > DsairConst.maxAccessories) {
 			this._AccTypes = this._AccTypes.slice(0, DsairConst.maxAccessories);
 		} else if (aAccImageArray_strarray.length < DsairConst.maxAccessories) {
-			for (let i = aAccImageArray_strarray.length; i < DsairConst.maxAccessories; i++) {
+			for (var i = aAccImageArray_strarray.length; i < DsairConst.maxAccessories; i++) {
 				this._AccTypes.push(0);
 			}
 		}
@@ -201,37 +201,37 @@ Storage.prototype.LoadMapDatas = function () {
 		return;
 	}
 
-	let aAccAddrArray_str = localStorage.getItem('MAPDAT-ACCADDR');
+	var aAccAddrArray_str = localStorage.getItem('MAPDAT-ACCADDR');
 
 	if (aAccAddrArray_str != null) {
 		var aAccAddrArray_strarray = aAccAddrArray_str.split(',');
 
-		for (let addr of aAccAddrArray_strarray) {
+		for (var addr of aAccAddrArray_strarray) {
 			this._MapAccAddr.push(parseInt(addr));
 		}
 
-		for (let i = aAccAddrArray_strarray.length; i < this._maxMapImages; i++) {
+		for (var i = aAccAddrArray_strarray.length; i < this._maxMapImages; i++) {
 			this._MapAccAddr.push(0);
 		}
 	}
 
-	let aMapImgArray_str = localStorage.getItem('MAPDAT-IMAGE');
+	var aMapImgArray_str = localStorage.getItem('MAPDAT-IMAGE');
 
 	if (aMapImgArray_str != null) {
 
 		var aMapImgArray_strarray = aMapImgArray_str.split(',');
 
-		for (let image of aMapImgArray_strarray) {
+		for (var image of aMapImgArray_strarray) {
 			this._MapImage.push(parseInt(image));
 		}
 		
-		for (let i = aMapImgArray_strarray.length; i < this._maxMapImages; i++) {
+		for (var i = aMapImgArray_strarray.length; i < this._maxMapImages; i++) {
 			this._MapImage.push(0);
 		}
 	}
 
-	let aMapWidth = localStorage.getItem('MAPDAT-WIDTH');
-	let aMapHeight = localStorage.getItem('MAPDAT-HEIGHT');
+	var aMapWidth = localStorage.getItem('MAPDAT-WIDTH');
+	var aMapHeight = localStorage.getItem('MAPDAT-HEIGHT');
 
 	console.log(aMapWidth, aMapHeight);
 	if (aMapWidth != null) {
@@ -269,7 +269,7 @@ Storage.prototype.Init = function () {
 	this._gLoading = 0;
 
 	// コールバック呼び出し
-	for (let cbObj of this._onLoadCallbacks) {
+	for (var cbObj of this._onLoadCallbacks) {
 		cbObj.onDataLoad();
 	}
 };

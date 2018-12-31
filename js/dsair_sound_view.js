@@ -30,28 +30,28 @@ DsairSoundView.prototype.showFileList = function (path, filelist) {
             (-1).toString() + ')> <label>' +
             '../' + '</label> </button><br>');
     }
-    let len = filelist.length;
-    for (let i = 0; i < len; i++) {
-        let file = filelist[i];
+    var len = filelist.length;
+    for (var i = 0; i < len; i++) {
+        var file = filelist[i];
         //console.log('%s %d', file.fname, file.attr);
         // Skip hidden file.
         if ((file.attr & 0x02) != 0) {
             continue;
         }
-        let filelink;
+        var filelink;
         // directory
         if ((file.attr & 0x10) != 0) {
                 filelink = '<button onclick=chageDirectory(' + i.toString() + ')> <label>' + file.fname + '/' + '</label> </button><br>';
         } else {
             // regular file
-            let aExt = this.splitExt(file.fname.toLowerCase());
+            var aExt = this.splitExt(file.fname.toLowerCase());
             if (aExt.length <= 1) {
                 continue;
             } 
             if (aExt[1] != 'mp3') {
                 continue;
             }
-            let caption = file.fname;
+            var caption = file.fname;
             // Make a link to a file.
             filelink = '<button onclick=playSound(' + i.toString() + ')> <label>' + caption + '</label> </button><br>';
         }

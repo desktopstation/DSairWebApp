@@ -1,4 +1,4 @@
-let DsairMapToolView = function (inCanvasName) {
+var DsairMapToolView = function (inCanvasName) {
     this._canvasName = inCanvasName;
     this._controller = null;
     this._toolIndex = 0;
@@ -52,12 +52,12 @@ DsairMapToolView.prototype.onClickLayoutTool = function (e) {
 
     e.preventDefault(); 
 
-    let rect = e.target.getBoundingClientRect();
+    var rect = e.target.getBoundingClientRect();
 
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    let xx = Math.floor(x / this._chipSize);
-    let yy = Math.floor(y / this._chipSize);
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var xx = Math.floor(x / this._chipSize);
+    var yy = Math.floor(y / this._chipSize);
 
     this._toolIndex = (yy * 2) + xx;
 
@@ -82,16 +82,16 @@ DsairMapToolView.prototype.DrawLayoutTool = function () {
     this._cv.fill();
     this._cv.stroke();    
 
-    for (let y = 0; y < 12; y++) {
-        for (let x = 0; x < 2; x++) {
+    for (var y = 0; y < 12; y++) {
+        for (var x = 0; x < 2; x++) {
 
-            let aIndex = y * 2 + x;
+            var aIndex = y * 2 + x;
 
-            let xx = x * this._chipSize;
-            let yy = y * this._chipSize;
+            var xx = x * this._chipSize;
+            var yy = y * this._chipSize;
 
-            let aImageX = aIndex % 4;
-            let aImageY = Math.floor(aIndex / 4);
+            var aImageX = aIndex % 4;
+            var aImageY = Math.floor(aIndex / 4);
             
             this._cv.drawImage(this._imagMapData, this._chipSize * aImageX, this._chipSize * aImageY, this._chipSize, this._chipSize, xx, yy, this._chipSize, this._chipSize);
         }
@@ -101,14 +101,14 @@ DsairMapToolView.prototype.DrawLayoutTool = function () {
     this._cv.strokeStyle = '#202020';
 
     // grid
-    for (let ay = 0; ay < 12; ay++) {
+    for (var ay = 0; ay < 12; ay++) {
         this._cv.moveTo(0, ay * this._chipSize);
         this._cv.lineTo(this._mapWidth * this._chipSize, ay * this._chipSize);
         this._cv.closePath();
         this._cv.stroke();
     }
 
-    for (let ax = 0; ax < 2; ax++) {
+    for (var ax = 0; ax < 2; ax++) {
         this._cv.moveTo(ax * this._chipSize, 0);
         this._cv.lineTo(ax * this._chipSize, this._mapHeight * this._chipSize);
         this._cv.closePath();

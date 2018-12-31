@@ -49,8 +49,8 @@ DsairCVControl.prototype.addEditDialog = function (inDialog) {
 //
 
 DsairCVControl.prototype.onClickCVWrite = function () {
-    let aCVNo = this._view.getCVNo();
-    let aCVValue = this._view.getCVValue();
+    var aCVNo = this._view.getCVNo();
+    var aCVValue = this._view.getCVValue();
 
     if (this._command.getPowerStatus() == DsairConst.powerOn) {
         this._msgDialog.open('Please <b>power off</b>.', false, null, '')
@@ -62,7 +62,7 @@ DsairCVControl.prototype.onClickCVWrite = function () {
 };
 
 DsairCVControl.prototype.onClickCVRead = function () {
-    let aCVNo = this._view.getCVNo();
+    var aCVNo = this._view.getCVNo();
 
     if (this._command.getPowerStatus() == DsairConst.powerOn) {
         this._msgDialog.open('Please <b>power off</b>.', false, null, '')
@@ -103,7 +103,7 @@ DsairCVControl.prototype.onDistStateNotify = function(cbArg) {
 DsairCVControl.prototype.ChangeCVDescription = function () {
     this._CVNo = this._view.getCVNo();
     //console.log('ChangeCVDescription', this._CVNo);
-    let description = '';
+    var description = '';
     switch (this._CVNo) {
         case 1:
             description = 'Set 1 to 99(127).';
@@ -129,9 +129,9 @@ DsairCVControl.prototype.RegisterCVList = function () {
 
 DsairCVControl.prototype.ReadCVListCallback = function (jsonObj) {
     if (jsonObj != null) {
-        let len = jsonObj.cvdata.length;
+        var len = jsonObj.cvdata.length;
 
-        for (let i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             this._view.appendCVList('<option value=' + jsonObj.cvdata[i].cvnum + '>' +
             jsonObj.cvdata[i].cvname + '</option>');
         }

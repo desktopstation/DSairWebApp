@@ -23,7 +23,7 @@ DsairAddressInputDialog.prototype.open = function (inAddr, inCallerObject, inMet
     }
     this._locAddr = inAddr;
 
-    let self = this;
+    var self = this;
     $('p').css({
         'display': 'block'
     });
@@ -73,7 +73,7 @@ DsairAddressInputDialog.prototype.open = function (inAddr, inCallerObject, inMet
                 $(self._textAreaName).val('');
             },
             'OK': function () {
-                let val = {
+                var val = {
                     addr: self._locAddr
                 };
                 self.super.close.call(self, val);

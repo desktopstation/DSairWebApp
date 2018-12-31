@@ -53,8 +53,8 @@ DsairAnalogControl.prototype.Free = function () {
 };
 
 DsairAnalogControl.prototype.SpeedCurve = function (inMode, inSpeed) {
-    let aSpd = inSpeed;
-    let aSpd_unit = inSpeed / 1023;
+    var aSpd = inSpeed;
+    var aSpd_unit = inSpeed / 1023;
 
     switch (inMode) {
         case 1:
@@ -136,7 +136,7 @@ DsairAnalogControl.prototype.DelaySpeedProgress = function () {
 };
 
 DsairAnalogControl.prototype.onChangeSpeed = function (inSpeed, inUpdateFlag) {
-    let powerOwner = this._powerArbitor.getPowerOwner();
+    var powerOwner = this._powerArbitor.getPowerOwner();
     if (!((powerOwner == '') || (powerOwner == this._name))) {
         // DCCがONの時は無効
         return;
@@ -153,7 +153,7 @@ DsairAnalogControl.prototype.onChangeSpeed = function (inSpeed, inUpdateFlag) {
             this._SpeedDelayTime = Math.abs(this._LocSpeed - this._LocSpeedLast) * 30000 / 1023;//0->max speed == 30sec
             this._SpeedDelayDiff = (this._LocSpeed - this._LocSpeedLast) * 111 / this._SpeedDelayTime;
 
-            let self = this;
+            var self = this;
             this._DelayInterval = setInterval(function () {self.DelaySpeedProgress();}, 111);
         }
         else {
@@ -165,7 +165,7 @@ DsairAnalogControl.prototype.onChangeSpeed = function (inSpeed, inUpdateFlag) {
         this._LocSpeed = inSpeed;
 
         this.onDrawMeter(this._LocSpeed);
-        let date = new Date();
+        var date = new Date();
 
         if ((Math.abs(date.getTime() - this._LastUpdateTime) >= 500) || inUpdateFlag) {
             if (this._LocSpeedLast != this._LocSpeed) {
@@ -201,7 +201,7 @@ DsairAnalogControl.prototype.Speed = function (inSpeed) {
     this._LocSpeedLast = inSpeed;
     //console.log(inSpeed);
 
-    let aSpeed = this.SpeedCurve(this._SpeedMode, inSpeed);
+    var aSpeed = this.SpeedCurve(this._SpeedMode, inSpeed);
 
     if ((aSpeed < this._LightThreshold) && (this._LightMode)) {
         aSpeed = this._LightThreshold;
@@ -228,7 +228,7 @@ DsairAnalogControl.prototype.Stop = function () {
 };
 
 DsairAnalogControl.prototype.onDrawMeter = function (inSpeed) {
-    for (let meter of this._speedMeter) {
+    for (var meter of this._speedMeter) {
         meter.onDrawMeter(inSpeed, this._Direction);
     }
     this._view.setSpeed(inSpeed);

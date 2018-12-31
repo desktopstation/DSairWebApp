@@ -58,28 +58,28 @@ DsairFileSelectionDialog.prototype.getFileListCallback = function (path, filelis
     $(this._listArea).html = '';
     $(this._directoryArea).val(path);
     $(this._filenameArea).val(this._filename);
-    let len = this._fileList.length;
-    for (let i = 0; i < len; i++) {
-        let file = this._fileList[i];
+    var len = this._fileList.length;
+    for (var i = 0; i < len; i++) {
+        var file = this._fileList[i];
         this._buttonIdList[i] = null;
         // Skip hidden file.
         if ((file.attr & 0x02) != 0) {
             continue;
         }
-        let buttonId;
+        var buttonId;
         if (this._dialogName.substr(0, 1) == '#') {
             buttonId = this._dialogName.substr(1) + "-" + i.toString();
         } else {
             buttonId = this._dialogName + "-" + i.toString();
         }
         this._buttonIdList[i] = buttonId;
-        let caption;
+        var caption;
         // directory
         if ((file.attr & 0x10) != 0) {
             caption = file.fname + '/';
         } else {
             // regular file
-            let aExt = this.splitExt(file.fname.toLowerCase());
+            var aExt = this.splitExt(file.fname.toLowerCase());
             if (aExt.length <= 1) {
                 continue;
             } 
@@ -88,16 +88,16 @@ DsairFileSelectionDialog.prototype.getFileListCallback = function (path, filelis
             // }
             caption = file.fname;
         }
-        let buttonText = '<button id=' + buttonId + ' <label>' + caption + '</label> </button><br>'
+        var buttonText = '<button id=' + buttonId + ' <label>' + caption + '</label> </button><br>'
         $(this._listArea).append(buttonText);
-        // let button = document.getElementById(buttonId);
+        // var button = document.getElementById(buttonId);
         // button.addEventListener('click', this);
         // console.log(button);
     }
     $('p').css({
         'display': 'block'
     });
-    let self = this;
+    var self = this;
     $(this._dialogName).dialog({
         dialogClass: this._className,
         autoOpen: false,
@@ -117,10 +117,10 @@ DsairFileSelectionDialog.prototype.getFileListCallback = function (path, filelis
 
 DsairFileSelectionDialog.prototype.onDialogOpen = function () {
     console.log('dialog open');
-    let len = this._fileList.length;
-    for (let i = 0; i < len; i++) {
+    var len = this._fileList.length;
+    for (var i = 0; i < len; i++) {
         if (this._buttonIdList[i] != null) {
-            let button = document.getElementById(this._buttonIdList[i]);
+            var button = document.getElementById(this._buttonIdList[i]);
             button.addEventListener('click', this);
         }
     }

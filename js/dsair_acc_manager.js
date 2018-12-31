@@ -4,7 +4,7 @@ var DsairAccManager = function () {
     this._configControl = null;
     this._accChangeCallbackList = []
     this._AccStatus = []; 
-    for (let i = 0; i < DsairConst.maxAccessories; i++) {
+    for (var i = 0; i < DsairConst.maxAccessories; i++) {
         this._AccStatus.push(0);
     }
 };
@@ -37,7 +37,7 @@ DsairAccManager.prototype.changeAcc = function (inNo) {
         return false;
     }
 
-    let aOnOff = this._AccStatus[inNo];
+    var aOnOff = this._AccStatus[inNo];
 
     if (aOnOff == 1) {
         aOnOff = 0;
@@ -56,7 +56,7 @@ DsairAccManager.prototype.getAccStatus = function (inNo) {
 };
 
 DsairAccManager.prototype.callAccChangeCallback = function(inNo, inStatus) {
-    for (let cb of this._accChangeCallbackList) {
+    for (var cb of this._accChangeCallbackList) {
         cb.onAccValueChange(inNo, inStatus);
     }
 };
@@ -74,7 +74,7 @@ DsairAccManager.prototype.setAccProtocol = function(inAccProtocol) {
 // 保存していた値を復旧する
 DsairAccManager.prototype.onDataLoad = function () {
     // プロトコル設定
-    let aAccProtocol = this._storage.getAccProtocol();
+    var aAccProtocol = this._storage.getAccProtocol();
     aAccProtocol = this.setAccProtocol(aAccProtocol);
     this._configControl.setAccProtocol(aAccProtocol);
 };

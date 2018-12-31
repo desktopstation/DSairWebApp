@@ -1,5 +1,5 @@
 //
-let DsairMeterJNR = function (inCanvasName) {
+var DsairMeterJNR = function (inCanvasName) {
     DsairCircularMeter.call(this, inCanvasName);
     this.super = DsairCircularMeter.prototype;
 };
@@ -105,20 +105,20 @@ DsairMeterJNR.prototype._drawMeterScale = function () {
     // Canvasの色、フォント
     this._cv.fillStyle = this._scaleColor;
     // 目盛表示
-    for (let i = 0; i <= this._meterMaxSpeed; i++) {
-        let radian = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg) * Math.PI / 180;
-        let radian2 = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg + 1.5) * Math.PI / 180;
-        let radian3 = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg - 1.5) * Math.PI / 180;
-        let pos_x = this._cPoint(this._center, this._rLen - 2, radian);//外側
-        let pos_x2 = this._cPoint(this._center, this._rLen - 28, radian);//内側
+    for (var i = 0; i <= this._meterMaxSpeed; i++) {
+        var radian = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg) * Math.PI / 180;
+        var radian2 = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg + 1.5) * Math.PI / 180;
+        var radian3 = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg - 1.5) * Math.PI / 180;
+        var pos_x = this._cPoint(this._center, this._rLen - 2, radian);//外側
+        var pos_x2 = this._cPoint(this._center, this._rLen - 28, radian);//内側
 
-        let aMemSize = 1;
+        var aMemSize = 1;
 
         if (i % 20 == 0) {
             aMemSize = 5;
             // 三角形描画
-            let pos_r2 = this._cPoint(this._center, this._rLen - 3, radian2);//外側
-            let pos_r3 = this._cPoint(this._center, this._rLen - 3, radian3);//外側
+            var pos_r2 = this._cPoint(this._center, this._rLen - 3, radian2);//外側
+            var pos_r3 = this._cPoint(this._center, this._rLen - 3, radian3);//外側
             this._cv.beginPath();
             this._cv.moveTo(pos_x2.x, pos_x2.y);
             this._cv.lineTo(pos_r2.x, pos_r2.y);
@@ -152,17 +152,17 @@ DsairMeterJNR.prototype._drawMeterScale = function () {
 // 文字盤表示
 DsairMeterJNR.prototype._drawMeterScaleChar = function () {
     this._setCharProp(this._cv, this._scaleCharProp);
-    let MeterNotch = 20;
+    var MeterNotch = 20;
     if ( this._meterMaxSpeed >= 200) {
         MeterNotch = 40;
     }
-    for (let i = 0; i <= this._meterMaxSpeed; i++) {
+    for (var i = 0; i <= this._meterMaxSpeed; i++) {
         if(i % MeterNotch == 0) {
-            let radian = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg) * Math.PI / 180;
-            let xx = this._center.x + (this._hLen - 30) * Math.cos(radian) ;
-            let yy = this._center.y + (this._hLen - 30) * Math.sin(radian) + this._fSize / 4;
-            let aSpeedMeterText = i;
-            let aMetrics3 = this._cv.measureText(aSpeedMeterText);
+            var radian = ((this._meterRangeDeg / this._meterMaxSpeed) * i + this._meterStartDeg) * Math.PI / 180;
+            var xx = this._center.x + (this._hLen - 30) * Math.cos(radian) ;
+            var yy = this._center.y + (this._hLen - 30) * Math.sin(radian) + this._fSize / 4;
+            var aSpeedMeterText = i;
+            var aMetrics3 = this._cv.measureText(aSpeedMeterText);
             this._cv.fillText(aSpeedMeterText, xx - (aMetrics3.width * 0.8 / 2), yy,aMetrics3.width * 0.8);
         }
     }
@@ -176,9 +176,9 @@ DsairMeterJNR.prototype._drawMeterHand = function (inValue) {
     this._cv.shadowOffsetX = 0;
     this._cv.shadowOffsetY = 0;
     // 針(影)描画
-    let hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
-    let pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
-    let a90deg = Math.PI / 2;
+    var hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
+    var pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
+    var a90deg = Math.PI / 2;
     this._setFillProp(this._cv, this._handShadowFillProp);
     this._cv.beginPath();
     this._cv.moveTo(this._center.x + 8 * Math.cos(hRadian - a90deg),

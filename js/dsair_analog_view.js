@@ -24,7 +24,7 @@ DsairAnalogView.prototype.handleEvent = function (e) {
 DsairAnalogView.prototype.onLoad = function () {
     $('#ANA_SPEED-value').val(0);
     $('#ANA_SPEED-option').val("%");
-    let self = this;
+    var self = this;
     $("#ANA_MaxVoltage").slider({
         orientation: 'vertical',
         animate: 'slow',

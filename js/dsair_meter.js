@@ -1,5 +1,5 @@
 //
-let DsairMeter = function (inCanvasName) {
+var DsairMeter = function (inCanvasName) {
     DsairCircularMeter.call(this, inCanvasName);
     this.super = DsairCircularMeter.prototype;
 };
@@ -107,13 +107,13 @@ DsairMeter.prototype._meterCenterCoefficient = 1 / 20;
 DsairMeter.prototype._drawMeterScale = function () {
     // Canvasの色、フォント
     this._cv.fillStyle = this._scaleColor; //"#9F9F9F";
-    for (let i = 0; i <= 60; i++) {
-        let radian = ((this._meterRangeDeg / 60) * i +
+    for (var i = 0; i <= 60; i++) {
+        var radian = ((this._meterRangeDeg / 60) * i +
             this._meterStartDeg) * Math.PI / 180;
-        let xx = this._center.x + (this._rLen - 20) * Math.cos(radian);
-        let yy = this._center.y + (this._rLen - 20) * Math.sin(radian);
+        var xx = this._center.x + (this._rLen - 20) * Math.cos(radian);
+        var yy = this._center.y + (this._rLen - 20) * Math.sin(radian);
 
-        let aMemSize = 2;
+        var aMemSize = 2;
 
         if (i % 10 == 0) {
             aMemSize = 6;
@@ -134,12 +134,12 @@ DsairMeter.prototype._drawMeterScale = function () {
 // 文字盤表示
 DsairMeter.prototype._drawMeterScaleChar = function () {
     this._setCharProp(this._cv, this._scaleCharProp);
-    for (let i = 0; i <= 6; i++) {
-        let radian = ((this._meterRangeDeg / 6) * i + this._meterStartDeg) * Math.PI / 180;
-        let xx = this._center.x + (this._hLen - 20) * Math.cos(radian);
-        let yy = this._center.y + (this._hLen - 20) * Math.sin(radian) + this._fSize / 4;
-        let aSpeedMeterText = Math.round(i * (this._meterMaxSpeed / 6));
-        let aMetrics3 = this._cv.measureText(aSpeedMeterText);
+    for (var i = 0; i <= 6; i++) {
+        var radian = ((this._meterRangeDeg / 6) * i + this._meterStartDeg) * Math.PI / 180;
+        var xx = this._center.x + (this._hLen - 20) * Math.cos(radian);
+        var yy = this._center.y + (this._hLen - 20) * Math.sin(radian) + this._fSize / 4;
+        var aSpeedMeterText = Math.round(i * (this._meterMaxSpeed / 6));
+        var aMetrics3 = this._cv.measureText(aSpeedMeterText);
         this._cv.fillText(aSpeedMeterText, xx - (aMetrics3.width / 2), yy);
     }
 };
@@ -147,9 +147,9 @@ DsairMeter.prototype._drawMeterScaleChar = function () {
 // 針描画
 DsairMeter.prototype._drawMeterHand = function (inValue) {
     // 針(影)描画
-    let hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
-    let pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
-    let a90deg = Math.PI / 2;
+    var hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
+    var pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
+    var a90deg = Math.PI / 2;
     this._setFillProp(this._cv, this._handShadowFillProp);
     this._cv.beginPath();
     this._cv.moveTo(this._center.x + 8 * Math.cos(hRadian - a90deg),

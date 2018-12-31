@@ -16,8 +16,8 @@ var DsairMapControl = function () {
     this._mapImage = [];
     this._mapWidth = this._defaultMapWidth;
     this._mapHeight = this._defaultMapHeight;
-    let len = this._MaxWidth * this._MaxHeight;
-    for (let i = 0; i <  len; i++) {
+    var len = this._MaxWidth * this._MaxHeight;
+    for (var i = 0; i <  len; i++) {
         this._Map_AccAddr.push(0);
         this._Map_Image.push(0);
     }
@@ -79,7 +79,7 @@ DsairMapControl.prototype.onClickSaveMaps = function () {
 
 DsairMapControl.prototype.setToolIndex = function (inChipToolIndex) {
     this._ChipToolIndex = inChipToolIndex;
-    let msg = null;
+    var msg = null;
     switch (this._ChipToolIndex) {
         case 0:
             msg = 'Accessory operation mode';
@@ -106,7 +106,7 @@ DsairMapControl.prototype.onClickLayoutPanel = function (inChipIndex) {
             this._toast.show('This chip has no functions.');
         } else {
             if (this._mapAccAddr[this._ChipIndex] > 0) {
-                let ret = this._accManager.changeAcc(this._mapAccAddr[inChipIndex] - 1);
+                var ret = this._accManager.changeAcc(this._mapAccAddr[inChipIndex] - 1);
                 if (!ret) {
                     this._toast.show('The power is off.');
                 }
@@ -145,8 +145,8 @@ DsairMapControl.prototype.onClickClearMaps = function ()  {
 };
 
 DsairMapControl.prototype.ClearMaps = function () {
-    let len = this._mapWidth * this._mapHeight;
-    for (let i = 0; i < len; i++) {
+    var len = this._mapWidth * this._mapHeight;
+    for (var i = 0; i < len; i++) {
         this._mapAccAddr[i] = 0;
         this._mapImage[i] = 0;
     }
@@ -179,10 +179,10 @@ DsairMapControl.prototype.onDataLoad = function () {
 
 DsairMapControl.prototype._onDataLoad = function (inMapInfo) {
     if (inMapInfo == null || inMapInfo.width == 0 || inMapInfo.height == 0) {
-        let n = this._mapWidth * this._mapHeight;
+        var n = this._mapWidth * this._mapHeight;
         this._mapAccAddr = [];
         this._mapImage = [];
-        for (let i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             this._mapAccAddr.push(0);
             this._mapImage.push(0);
         }
@@ -196,13 +196,13 @@ DsairMapControl.prototype._onDataLoad = function (inMapInfo) {
 };
 
 DsairMapControl.prototype.download = function () {
-    let mapinfo = {
+    var mapinfo = {
         width: this._mapWidth,
         height: this._mapHeight,
         accAddrs: this._mapAccAddr,
         images: this._mapImage
     };
-    let jsonObj = JSON.stringify(mapinfo);
+    var jsonObj = JSON.stringify(mapinfo);
     this._dsairCommand.download(this._mapFilename, jsonObj);
 };
 
@@ -220,7 +220,7 @@ DsairMapControl.prototype.upload = function () {
 
 DsairMapControl.prototype.uploadCallback = function (data, filename) {
     this._mapFilename = filename;
-    let parsedObj = null;
+    var parsedObj = null;
     try {
         parsedObj = JSON.parse(data);
         console.log(parsedObj);

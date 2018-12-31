@@ -10,12 +10,12 @@ inherits(DsairMsgDialog, DsairDialog);
 DsairMsgDialog.prototype.open = function(inMessage, cancelable, inCallbackObject, inMethodName) {
     this._message = inMessage;
 
-    let self = this;
-    let buttons = [
+    var self = this;
+    var buttons = [
         {
             text: 'Ok',
             click: function () {
-                let result = {
+                var result = {
                     isOK: true
                 };
                 self.super.close.call(self, result);
@@ -27,7 +27,7 @@ DsairMsgDialog.prototype.open = function(inMessage, cancelable, inCallbackObject
             {
                 text: 'Cancel',
                 click: function () {
-                    let result = {
+                    var result = {
                         isOK: false
                     };
                     self.super.close.call(self, result);

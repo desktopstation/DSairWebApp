@@ -8,8 +8,8 @@ DsairStatusView.prototype.setDevice = function (inDevice) {
 };
 
 DsairStatusView.prototype.formatNumber = function (n) {
-    let intPart = Math.trunc(n / 10);
-    let tenthPart = n - (intPart * 10);
+    var intPart = Math.trunc(n / 10);
+    var tenthPart = n - (intPart * 10);
     return intPart.toString() + '.' + tenthPart.toString();
 };
 

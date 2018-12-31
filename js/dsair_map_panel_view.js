@@ -1,4 +1,4 @@
-let DsairMapPanelView = function (inCanvasName) {
+var DsairMapPanelView = function (inCanvasName) {
     this._canvasName = inCanvasName;
     this._controller = null;
     this._chipIndex = 0;
@@ -37,7 +37,7 @@ DsairMapPanelView.prototype.onLoad = function() {
         this._canvasHeight = this._canvas.getAttribute('height');
     }
     this._canvas.addEventListener('mousedown', this);
-    let self = this;
+    var self = this;
     $('#mapboxMain').scroll(function() {
         self.DrawLayoutPanel();
     });
@@ -58,12 +58,12 @@ DsairMapPanelView.prototype.onClickLayoutCanvas = function (e) {
 
     e.preventDefault();
 
-    let rect = e.target.getBoundingClientRect();
+    var rect = e.target.getBoundingClientRect();
 
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    let xx = Math.floor(x / this._chipSize);
-    let yy = Math.floor(y / this._chipSize);
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var xx = Math.floor(x / this._chipSize);
+    var yy = Math.floor(y / this._chipSize);
 
     this._chipIndex = (yy * this._mapWidth) + xx;
 
@@ -78,7 +78,7 @@ DsairMapPanelView.prototype.DrawLayoutPanel = function () {
         this._canvasWidth = this._canvas.getAttribute('width');
         this._canvasHeight = this._canvas.getAttribute('height');
     }
-    let aTileImageOffset = 26;
+    var aTileImageOffset = 26;
 
     this._cv.clearRect(0, 0, this._canvasWidth, this._canvasHeight);
 
@@ -96,25 +96,25 @@ DsairMapPanelView.prototype.DrawLayoutPanel = function () {
     this._cv.fill();
     this._cv.stroke();
 
-    let aScrollY = Math.floor($('#mapboxMain').scrollTop() / this._chipSize);
-    let aScrollX = Math.floor($('#mapboxMain').scrollLeft() / this._chipSize);
+    var aScrollY = Math.floor($('#mapboxMain').scrollTop() / this._chipSize);
+    var aScrollX = Math.floor($('#mapboxMain').scrollLeft() / this._chipSize);
 
     this._cv.font = '14px \'arial\'';
 
-    for (let y = aScrollY; y < aScrollY + 15; y++) {
-        for (let x = aScrollX; x < aScrollX + 20; x++) {
+    for (var y = aScrollY; y < aScrollY + 15; y++) {
+        for (var x = aScrollX; x < aScrollX + 20; x++) {
 
-            let xx = x * this._chipSize;
-            let yy = y * this._chipSize;
+            var xx = x * this._chipSize;
+            var yy = y * this._chipSize;
 
-            let aIndex = y * this._mapWidth + x;
+            var aIndex = y * this._mapWidth + x;
 
-            let aMapImage = this._controller.getMapImage(aIndex);
-            let aMapAccAddr = this._controller.getMapAccAddr(aIndex);
-            let aChipToolIndex = this._controller.getChipToolIndex();
+            var aMapImage = this._controller.getMapImage(aIndex);
+            var aMapAccAddr = this._controller.getMapAccAddr(aIndex);
+            var aChipToolIndex = this._controller.getChipToolIndex();
             if (aMapImage > 1) {
-                let aImageX = aMapImage % 4;
-                let aImageY = Math.floor(aMapImage / 4);
+                var aImageX = aMapImage % 4;
+                var aImageY = Math.floor(aMapImage / 4);
 
                 if ((aMapImage < 10) || (aChipToolIndex > 1)) {
                     this._cv.drawImage(this._imagMapData,
@@ -122,7 +122,7 @@ DsairMapPanelView.prototype.DrawLayoutPanel = function () {
                         this._chipSize, this._chipSize,
                         xx, yy, this._chipSize, this._chipSize);
                 } else if (aMapAccAddr > 0) {
-                    let aAccStatus = this._controller.getAccStatus(aMapAccAddr - 1);
+                    var aAccStatus = this._controller.getAccStatus(aMapAccAddr - 1);
 
                     if (aMapImage >= 20) {
                         aTileImageOffset = 24;
@@ -131,8 +131,8 @@ DsairMapPanelView.prototype.DrawLayoutPanel = function () {
                         aTileImageOffset = 26;
                     }
 
-                    let aImageX2 = Math.floor((Math.floor(aMapImage) + aTileImageOffset) % 4);
-                    let aImageY2 = Math.floor((Math.floor(aMapImage) + aTileImageOffset) / 4);
+                    var aImageX2 = Math.floor((Math.floor(aMapImage) + aTileImageOffset) % 4);
+                    var aImageY2 = Math.floor((Math.floor(aMapImage) + aTileImageOffset) / 4);
 
                     aImageY2 += (aAccStatus == 0 ? 6 : 0);
                     this._cv.drawImage(this._imagMapData,
@@ -174,14 +174,14 @@ DsairMapPanelView.prototype.DrawLayoutPanel = function () {
     this._cv.lineWidth = '1px';
 
     // grid
-    for (let ay = aScrollY; ay < aScrollY + 15; ay++) {
+    for (var ay = aScrollY; ay < aScrollY + 15; ay++) {
         this._cv.moveTo(aScrollX * this._chipSize, ay * this._chipSize);
         this._cv.lineTo((aScrollX + 20) * this._chipSize, ay * this._chipSize);
         this._cv.closePath();
         this._cv.stroke();
     }
 
-    for (let ax = aScrollX; ax < aScrollX + 20; ax++) {
+    for (var ax = aScrollX; ax < aScrollX + 20; ax++) {
         this._cv.moveTo(ax * this._chipSize, aScrollY * this._chipSize);
         this._cv.lineTo(ax * this._chipSize, (aScrollY + 15) * this._chipSize);
         this._cv.closePath();

@@ -147,7 +147,7 @@ DsairCabControl.prototype.onClickFunction = function (inFuncNo) {
         this._dsairCabView.UpdateFunctionButtonsAll();
         return;
     }
-    let aOnOff = this._locFuncStatus[this._modeLocIndex][inFuncNo];
+    var aOnOff = this._locFuncStatus[this._modeLocIndex][inFuncNo];
 
     if (aOnOff == 1) {
         aOnOff = 0;
@@ -162,14 +162,14 @@ DsairCabControl.prototype.onClickFunction = function (inFuncNo) {
         selectVal = 0;
     }
 
-    let aLocAddr = this._locProtocol + this._dblLocArray[selectVal];
+    var aLocAddr = this._locProtocol + this._dblLocArray[selectVal];
     // データ配信によるアップデートを一時抑制
     this._intervalUpdateLimit = this._intervalUpdateLimitValue;
     this._dsairCommand.setFunction([aLocAddr], inFuncNo, aOnOff);
 };
 
 DsairCabControl.prototype.onClickStop = function () {
-    let aTempDblHead = this._modeDblHeading;
+    var aTempDblHead = this._modeDblHeading;
     this._modeDblHeading = true;
 
     // 強制停止
@@ -190,10 +190,10 @@ DsairCabControl.prototype.onClickStop = function () {
 
 DsairCabControl.prototype.onClickFwd = function (inFwd) {
 
-    let aLocAddr = [];
-    let aLocAddr_rev = [];
-    let aFWD = inFwd;
-    let aFWD_rev = this.reverseDir(inFwd);
+    var aLocAddr = [];
+    var aLocAddr_rev = [];
+    var aFWD = inFwd;
+    var aFWD_rev = this.reverseDir(inFwd);
 
     if (!this._modeDblHeading) {
         //1
@@ -227,8 +227,8 @@ DsairCabControl.prototype.onClickFwd = function (inFwd) {
     this._intervalUpdateLimit = this._intervalUpdateLimitValue;  // r2f
 
     /*ゼロ速にしてから送信*/
-    let aDir;
-    let aDirRev;
+    var aDir;
+    var aDirRev;
     if (aFWD == 1) {
         aDir = DsairConst.dirFWD;
         aDirRev = DsairConst.dirREV;
@@ -272,7 +272,7 @@ DsairCabControl.prototype.onChangeSpeed = function (inSpeed, inForceUpdate) {
         inSpeed = this._maxInternalSpeed - 1;
     }
     //console.log('change speed %d', inSpeed);
-    let aLocAddr = [];
+    var aLocAddr = [];
 
     if (!this._modeDblHeading) {
         // 単機
@@ -281,7 +281,7 @@ DsairCabControl.prototype.onChangeSpeed = function (inSpeed, inForceUpdate) {
         }
     } else {
         // 重連
-        for (let addr of this._dblLocArray) {
+        for (var addr of this._dblLocArray) {
             if (addr != 0) {
                 aLocAddr.push(this._locProtocol + addr);
             }
@@ -390,7 +390,7 @@ DsairCabControl.prototype.startPeriodicProcess = function () {
 };
 
 DsairCabControl.prototype.getStatusCallback = function (inData) {
-    let cbArg = {
+    var cbArg = {
         cvNo: 0,
         cvValue: 0,
         statusVolt: 0,
@@ -404,14 +404,14 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
         statusReplyAcc: ''
     };
     //console.log('"%s"', inData);
-    let aReplyStrArray = inData.split(';');
+    var aReplyStrArray = inData.split(';');
     //DSairの共有メモリ・応答フレームデータ
     if (aReplyStrArray.length <= 1) {
         console.info('Invalid status "%s"', inData);
         return;
     }
 
-    let aPrmStrArray = aReplyStrArray[0].split(',');
+    var aPrmStrArray = aReplyStrArray[0].split(',');
 
     if (aPrmStrArray.length == 0) {
         console.info('Invalid status[0]');
@@ -421,11 +421,11 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
     if (this._intervalTimeout > 0) {
         this._intervalTimeout--;
     } else {
-        let aPower = aPrmStrArray[0];
+        var aPower = aPrmStrArray[0];
 
         if (aPower != '') {
             //console.log('aPower = %s', aPower);
-            let aPower_Num = DsairConst.powerOff;
+            var aPower_Num = DsairConst.powerOff;
 
             if (aPower == 'Y') {
                 aPower_Num = DsairConst.powerOn;
@@ -469,7 +469,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
     cbArg.statusReplyAcc = this._statusReplyAcc;
     //読み出したCV値
 
-    let aCvStrArray = aReplyStrArray[1].split(',');
+    var aCvStrArray = aReplyStrArray[1].split(',');
 
     if ((parseInt(aCvStrArray[1]) != 0) && (aCvStrArray.length > 2)) {
         this._readCVNo = parseInt(aCvStrArray[1]);
@@ -486,14 +486,14 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
     // }
     //機関車の配信データ取得
 
-    let aLocDistArrayRaw = aReplyStrArray[3].split('/');
+    var aLocDistArrayRaw = aReplyStrArray[3].split('/');
 
-    for (let i = 0; i < aLocDistArrayRaw.length; i++) {
-        let aLocDistArrayList = aLocDistArrayRaw[i].split(',');
-        let aLocAddr = parseInt('0x' + aLocDistArrayList[0]);
-        let aLocSpd = parseInt('0x' + aLocDistArrayList[1]);
-        let aLocDir = (aLocDistArrayList[2] == '0') ? DsairConst.dirFWD : DsairConst.dirREV;
-        let aLocFunc = parseInt('0x' + aLocDistArrayList[3]);
+    for (var i = 0; i < aLocDistArrayRaw.length; i++) {
+        var aLocDistArrayList = aLocDistArrayRaw[i].split(',');
+        var aLocAddr = parseInt('0x' + aLocDistArrayList[0]);
+        var aLocSpd = parseInt('0x' + aLocDistArrayList[1]);
+        var aLocDir = (aLocDistArrayList[2] == '0') ? DsairConst.dirFWD : DsairConst.dirREV;
+        var aLocFunc = parseInt('0x' + aLocDistArrayList[3]);
 
         if (aLocAddr == 0) {
             break;
@@ -505,7 +505,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
             locFunc: aLocFunc
         };
 
-        for (let j = 0; j < 4; j++) {
+        for (var j = 0; j < 4; j++) {
             if (aLocAddr == this._locProtocol + this._dblLocArray[j]) {
                 if (j == this._modeLocIndex) {
                     // 操作中で操作した直後は、4回空回しする
@@ -532,7 +532,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
                     // }
                 }
 
-                for (let k = 0; k < this._numFunctions; k++) {
+                for (var k = 0; k < this._numFunctions; k++) {
                     // if (this._powerStatus == DsairConst.powerOff) {
                     //     if (this._locFuncStatus[j][k] != 0) {
                     //         this._locFuncStatus[j][k] = 0;
@@ -564,7 +564,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
 };
 
 DsairCabControl.prototype.onSelectLoc = function () {
-    let oldIndex = this._modeLocIndex;
+    var oldIndex = this._modeLocIndex;
     // checkされているインデックスを取得
     this._modeLocIndex = this._dsairCabView.getModeLocIndex();
     if (oldIndex != this._modeLocIndex) {
@@ -580,19 +580,19 @@ DsairCabControl.prototype.onSelectLoc = function () {
 
 DsairCabControl.prototype.onDrawMeter = function (inSpeed, inDirection) {
     //console.info('speed = %d', inSpeed);
-    for (let meter of this._speedMeter) {
+    for (var meter of this._speedMeter) {
         meter.onDrawMeter(inSpeed, inDirection);
     }
 };
 
 // 保存していた値を復旧する
 DsairCabControl.prototype.onDataLoad = function () {
-    let aDblLocArray = this._storage.getLocAddr();
+    var aDblLocArray = this._storage.getLocAddr();
     if (aDblLocArray != null && aDblLocArray.length != 0) {
         if (aDblLocArray.length > this._numAddresses) {
             aDblLocArray = aDblLocArray.slice(0, this._numAddresses);
         } else if (aDblLocArray.length < this._numAddresses) {
-            for (let i = aDblLocArray.length; i < this._numAddresses; i++) {
+            for (var i = aDblLocArray.length; i < this._numAddresses; i++) {
                 aDblLocArray.push(0);
             }
         }
@@ -602,14 +602,14 @@ DsairCabControl.prototype.onDataLoad = function () {
     this._dsairCabView.initLocAddress(this._dblLocArray);
 
     // プロトコル設定
-    let aLocProtocol = this._storage.getLocProtocol();
+    var aLocProtocol = this._storage.getLocProtocol();
     //console.log(aLocProtocol);
     aLocProtocol = this.setLocProtocol(aLocProtocol);
     this._configControl.setLocProtocol(aLocProtocol);
 
     // 最高速度を設定
     // set maximum speed
-    let aLocMaxSpeed = this._storage.getMaxSpeed();
+    var aLocMaxSpeed = this._storage.getMaxSpeed();
     this.setMeterMaxSpeed(aLocMaxSpeed);
 
     // Function表示を初期化
@@ -622,7 +622,7 @@ DsairCabControl.prototype.setMeterMaxSpeed = function (inMeterMaxSpeed) {
         inMeterMaxSpeed = this._defaultLocMeterMaxSpeed;
     }
     this._meterMaxSpeed = inMeterMaxSpeed;
-    for (let meter of this._speedMeter) {
+    for (var meter of this._speedMeter) {
         meter.setMeterMaxValue(this._meterMaxSpeed);
     }
     this._configControl.setMeterMaxSpeed(this._meterMaxSpeed);
@@ -644,11 +644,11 @@ DsairCabControl.prototype.getLocAddrByIndex = function (inIndex) {
 };
 
 DsairCabControl.prototype.setLocAddr = function (inVal) {
-    let aLocAddr = inVal.addr;
+    var aLocAddr = inVal.addr;
     if (aLocAddr != 0) {
         //console.log(aLocAddr);
-        let found = false;
-        for (let addr of this._dblLocArray) {
+        var found = false;
+        for (var addr of this._dblLocArray) {
             if (addr == aLocAddr) {
                 found = true;
                 break;
@@ -661,8 +661,8 @@ DsairCabControl.prototype.setLocAddr = function (inVal) {
         }
     }
     this._dblLocArray[this._modeLocIndex] = aLocAddr;
-    let distAddr = this._locProtocol + aLocAddr;
-    let aLocFunc = 0;
+    var distAddr = this._locProtocol + aLocAddr;
+    var aLocFunc = 0;
     if (aLocAddr != 0 && distAddr in this._locDistInfo) {
         // 以前に配信された値を設定
         this._locSpeed[this._modeLocIndex] = this._locDistInfo[distAddr].locSpd;
@@ -673,7 +673,7 @@ DsairCabControl.prototype.setLocAddr = function (inVal) {
         this._locSpeed[this._modeLocIndex] = 0;
         this._locDir[this._modeLocIndex] = DsairConst.dirFWD;
     }
-    for (let k = 0; k < this._numFunctions; k++) {
+    for (var k = 0; k < this._numFunctions; k++) {
         this._locFuncStatus[this._modeLocIndex][k] = (aLocFunc >> k) & 1;
     }
     // 表示に反映
@@ -697,7 +697,7 @@ DsairCabControl.prototype.getPowerStatus = function () {
 };
 
 DsairCabControl.prototype.callDistStateNotifyCallback = function (inArg) {
-    for (let cb of this._distStateNotifyCallback) {
+    for (var cb of this._distStateNotifyCallback) {
         cb.onDistStateNotify(inArg);
     }
 };
@@ -724,8 +724,8 @@ DsairCabControl.prototype.onPowerStateChange = function (inName, inPower) {
 };
 
 DsairCabControl.prototype.initFuncStatus = function () {
-    for (let i = 0; i < this._numAddresses; i++) {
-        for (let j = 0; j < this._numFunctions; j++) {
+    for (var i = 0; i < this._numAddresses; i++) {
+        for (var j = 0; j < this._numFunctions; j++) {
             if (this._locFuncStatus[i][j] != 0) {
                 this._locFuncStatus[i][j] = 0;
             }

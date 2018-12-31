@@ -1,6 +1,6 @@
 //
 //
-let DsairCommand = function() {
+var DsairCommand = function() {
     this._flashairUtil = null;
 	this._SHRAM_LocRawData = '';
 	this._SHRAM_Power = DsairConst.powerOff;
@@ -55,10 +55,10 @@ DsairCommand.prototype.addNetworkKeyCallback = function (inCbObj) {
 //
 
 DsairCommand.prototype.getStatus = function () {
-	let self = this;
+	var self = this;
 	this._flashairUtil.readShmem(128, 264, function (data) {
         self._SHRAM_Power = (data.substr(0,1) == 'Y') ? DsairConst.powerOn : DsairConst.powerOff;
-        for (let cbObj of self._getStatusCbList) {
+        for (var cbObj of self._getStatusCbList) {
             if ('getStatusCallback' in cbObj) {
                 cbObj.getStatusCallback(data);
             }
@@ -71,9 +71,9 @@ DsairCommand.prototype.getPowerStatus = function() {
 };
 
 DsairCommand.prototype.getMasterCode = function () {
-    let self = this;
+    var self = this;
     this._flashairUtil.requestSimpleCommand(106, null, function (data) {
-        for (let cbObj of self._getMasterCodeCbList) {
+        for (var cbObj of self._getMasterCodeCbList) {
             if ('getMasterCodeCallback' in cbObj) {
                 cbObj.getMasterCodeCallback(data);
             }
@@ -82,9 +82,9 @@ DsairCommand.prototype.getMasterCode = function () {
 };
 
 DsairCommand.prototype.getSSID = function () {
-    let self = this;
+    var self = this;
     this._flashairUtil.requestSimpleCommand(104, null, function (data) {
-        for (let cbObj of self._getSSIDCbList) {
+        for (var cbObj of self._getSSIDCbList) {
             if ('getSSIDCallback' in cbObj) {
                 cbObj.getSSIDCallback(data);
             }
@@ -94,9 +94,9 @@ DsairCommand.prototype.getSSID = function () {
 
 DsairCommand.prototype.getAppNetworoKey = function () {
 
-    let self = this;
+    var self = this;
     this._flashairUtil.requestSimpleCommand(105, null, function (data) {
-        for (let cbObj of self._getAppNetworkKeyCbList) {
+        for (var cbObj of self._getAppNetworkKeyCbList) {
             if ('getAppNetworkKeyCallback' in cbObj) {
                 cbObj.getAppNetworkKeyCallback(data);
             }
@@ -110,69 +110,69 @@ DsairCommand.prototype.setParams = function (mastercode, appssid, appnetworkkey)
 
 //
 DsairCommand.prototype.setDirection = function (inDir, inLocAddr) {
-    let aDir;
+    var aDir;
     if (inDir == DsairConst.dirFWD) {
         aDir = '1';
     } else {
         aDir = '2';
     }
     //console.log(inLocAddr);
-    let aLocAddr = inLocAddr.join('/');
-    let arg = 'DI(' + aLocAddr + ',' + aDir + ')';
+    var aLocAddr = inLocAddr.join('/');
+    var arg = 'DI(' + aLocAddr + ',' + aDir + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setSpeed = function (inLocAddr, inSpeed, inLocSpeedStep) {
     //console.log(inLocAddr);
-	let aLocAddr = inLocAddr.join('/');
-    let arg = 'SP(' + aLocAddr + ',' + inSpeed + ',' + inLocSpeedStep + ')';
+	var aLocAddr = inLocAddr.join('/');
+    var arg = 'SP(' + aLocAddr + ',' + inSpeed + ',' + inLocSpeedStep + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setPower = function (inPon) {
-    let pon;
+    var pon;
     if (inPon == DsairConst.powerOn) {
         pon = '1';
     } else {
         pon = '0';
     }
-    let arg = 'PW(' + pon + ')';
+    var arg = 'PW(' + pon + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setFunction = function (inLocAddr, inFuncNo, inOnOff) {
-    let aLocAddr = inLocAddr.join('/');
-    let arg = 'FN(' + aLocAddr + ',' + inFuncNo + ',' + inOnOff + ')';
+    var aLocAddr = inLocAddr.join('/');
+    var arg = 'FN(' + aLocAddr + ',' + inFuncNo + ',' + inOnOff + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setAccessory = function (inAccAddr, inOnOff) {
-    let arg = 'TO(' + inAccAddr + ',' + inOnOff + ')';
+    var arg = 'TO(' + inAccAddr + ',' + inOnOff + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.writePing = function () {
-    let arg = 'PG()';
+    var arg = 'PG()';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setCV = function (inCVNo, inCVValue) {
-    let arg = 'SV(0,' + inCVNo + ',' + inCVValue + ')';
+    var arg = 'SV(0,' + inCVNo + ',' + inCVValue + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.getCV = function (inCVNo) {
-    let arg = 'GV(0,' + inCVNo  + ')';
+    var arg = 'GV(0,' + inCVNo  + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.setAnalogSpeed = function (inSpeed, inDir) {
-    let arg = 'DC(' + inSpeed +',' + inDir + ')';
+    var arg = 'DC(' + inSpeed +',' + inDir + ')';
     this._flashairUtil.sendCommand(arg);
 };
 
 DsairCommand.prototype.getFileList = function (inDirName, callbackObj, callbackMethod) {
-    let arg = 'DIR=' + inDirName;
+    var arg = 'DIR=' + inDirName;
     this._flashairUtil.requestSimpleCommand(100, arg,
         function (data) {
             callbackObj[callbackMethod](data);
@@ -192,8 +192,8 @@ DsairCommand.prototype.download = function (filename, content) {
 };
 
 DsairCommand.prototype.upload = function (callbackObj, callbackMethod, acceptFileType) {
-    let self = this;
-    let reader = new FileReader();
+    var self = this;
+    var reader = new FileReader();
     reader.onload = function () {
         // 読み込み完了
         // console.log('complete');
@@ -210,8 +210,8 @@ DsairCommand.prototype.upload = function (callbackObj, callbackMethod, acceptFil
 };
 
 DsairCommand.prototype.saveFileToFlashair = function (filename, content) {
-    let form = new FormData();
-    let blob = new Blob([content], { type: 'text/plain'});
+    var form = new FormData();
+    var blob = new Blob([content], { type: 'text/plain'});
     form.append('file', blob, filename);
 };
 

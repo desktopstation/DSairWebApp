@@ -42,7 +42,7 @@ DsairAnalogBar.prototype.onDrawMeter = function (inSpeed/*, inDir*/) {
     } else if (inSpeed > (this._internalMeterRange - 1)) {
         inSpeed = this._internalMeterRange - 1;
     }
-    let bar_val = (inSpeed * this._barHeight) / (this._internalMeterRange - 1);
+    var bar_val = (inSpeed * this._barHeight) / (this._internalMeterRange - 1);
 
     //灰色に描画
     this._ctx.fillStyle = 'lightgray';
@@ -51,7 +51,7 @@ DsairAnalogBar.prototype.onDrawMeter = function (inSpeed/*, inDir*/) {
     /* 描画 */
     this._ctx.beginPath();
     /* グラデーション領域をセット */
-    let grad = this._ctx.createLinearGradient(0, 0, 0, this._barHeight);
+    var grad = this._ctx.createLinearGradient(0, 0, 0, this._barHeight);
     /* グラデーション終点のオフセットと色をセット */
     grad.addColorStop(1, 'rgb(255, 180, 177)'); // 赤
     grad.addColorStop(0, 'rgb(192, 80, 100)'); // 紫

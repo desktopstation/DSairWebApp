@@ -86,7 +86,7 @@ DsairConfigControl.prototype.onSelectAccProtocol = function () {
 };
 
 DsairConfigControl.prototype.onConfigMaxSpeed = function () {
-    let aMaxSpeed = this._dsairConfigView.getSliderValue() * this._speedFactor;
+    var aMaxSpeed = this._dsairConfigView.getSliderValue() * this._speedFactor;
     if (this._meterMaxSpeed == aMaxSpeed) {
         return;
     }

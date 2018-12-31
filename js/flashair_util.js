@@ -29,7 +29,7 @@ FlashairUtil.prototype._timeZone = 36;
 //
 
 FlashairUtil.prototype.httpRequest = function (httpMethod, url, respCb, errCb, content) {
-	let xhr = new XMLHttpRequest();
+	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
 			if (xhr.status != 200) {
@@ -55,12 +55,12 @@ FlashairUtil.prototype.httpRequest = function (httpMethod, url, respCb, errCb, c
 };
 
 FlashairUtil.prototype.requestCommand = function (op, arg, respCb, errCb) {
-	let url = this._commandBase + this._commandOp + op.toString() + arg;
+	var url = this._commandBase + this._commandOp + op.toString() + arg;
 	this.httpRequest(this._httpMethodGet, url, respCb, errCb, null);
 };
 
 FlashairUtil.prototype.requestSimpleCommand = function (op, optarg, respCb, errCb) {
-	let url = this._commandBase + this._commandOp + op.toString();
+	var url = this._commandBase + this._commandOp + op.toString();
 	if (optarg != null) {
 		url += '&' + optarg;
 	}
@@ -68,25 +68,25 @@ FlashairUtil.prototype.requestSimpleCommand = function (op, optarg, respCb, errC
 };
 
 FlashairUtil.prototype.requestConfig = function(mastercode, args) {
-	let url = this._configBase + this._configMasterCode + mastercode + args
+	var url = this._configBase + this._configMasterCode + mastercode + args
 	this.httpRequest(this._httpMethodGet, url,
 		null, null, null);
 };
 
 FlashairUtil.prototype.setParams = function (mastercode, appssid, appnetworkkey) {
-	let arg = this._configUrlAppSSID + appssid +
+	var arg = this._configUrlAppSSID + appssid +
 	this._configNetworkKey + appnetworkkey +
 	this._configUrlTIMEZONE + this._timeZone.toString();
 	this.requestConfig(mastercode, arg);
 };
 
 FlashairUtil.prototype.readShmem = function (start, length, respCb, errCb) {
-	let arg = this._commandAddr + start.toString() + this._commandLen + length.toString();
+	var arg = this._commandAddr + start.toString() + this._commandLen + length.toString();
 	this.requestCommand(130, arg, respCb, errCb);
 };
 
 FlashairUtil.prototype.writeShmem = function (start, length, data, respCb, errcb) {
-	let arg = this._commandAddr + start.toString() + this._commandLen + length.toString() + this._commandData + data;
+	var arg = this._commandAddr + start.toString() + this._commandLen + length.toString() + this._commandData + data;
 	this.requestCommand(131, arg, respCb, errcb);
 };
 
@@ -95,11 +95,11 @@ FlashairUtil.prototype.sendCommand = function (arg) {
 };
 
 FlashairUtil.prototype.getJson = function (filename, callbackObject, callbackMethod) {
-	let documentURL = location.pathname;
-	let index = documentURL.lastIndexOf('/');
-	let dirname = documentURL.substr(0, index + 1);
+	var documentURL = location.pathname;
+	var index = documentURL.lastIndexOf('/');
+	var dirname = documentURL.substr(0, index + 1);
 	console.log(documentURL, filename);
-	let jsonURL;
+	var jsonURL;
 	if (DsairConst.documentRootDir == '.') {
 		jsonURL = dirname + filename;
 	} else {
@@ -119,10 +119,10 @@ FlashairUtil.prototype.getJson = function (filename, callbackObject, callbackMet
 		callbackObject: callbackObject,
 		callbackMethod: callbackMethod
 	}
-	let self = this;
+	var self = this;
 	this.httpRequest(this._httpMethodGet, jsonURL,
 		function (data) {
-			let parsedObj = null;
+			var parsedObj = null;
 			try {
 				parsedObj = JSON.parse(data);
 			} catch (e) {
@@ -162,8 +162,8 @@ FlashairUtil.prototype.postFileRequest = function (dirname, filename, content,
 };
 
 FlashairUtil.prototype.setWritable = function () {
-	let self = this;
-	let url = this._uploadBase + this._uploadWriteProtect + 'ON';
+	var self = this;
+	var url = this._uploadBase + this._uploadWriteProtect + 'ON';
 	this.httpRequest(this._httpMethodGet, url,
 	function (data) {
 		if (data != 'SUCCESS') {
@@ -178,7 +178,7 @@ FlashairUtil.prototype.setWritable = function () {
 };
 
 FlashairUtil.prototype.setUploadDir = function () {
-	let url = this._uploadBase + this._uploadDir + this._uploadArgs.dir;
+	var url = this._uploadBase + this._uploadDir + this._uploadArgs.dir;
 	this.httpRequest(this._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {
@@ -192,8 +192,8 @@ FlashairUtil.prototype.setUploadDir = function () {
 };
 
 FlashairUtil.prototype.setUploadTime = function () {
-	let timeStamp = this.getTimeStampForFAT();
-	let url = this._uploadBase + this._uploadSystemTime + '0x' + timeStamp.toString(16);
+	var timeStamp = this.getTimeStampForFAT();
+	var url = this._uploadBase + this._uploadSystemTime + '0x' + timeStamp.toString(16);
 	this.httpRequest(this._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {
@@ -207,7 +207,7 @@ FlashairUtil.prototype.setUploadTime = function () {
 };
 
 FlashairUtil.prototype.uploadFile = function () {
-	let url = this._uploadBase;
+	var url = this._uploadBase;
 	this.httpRequest(this._httpMethodPost, url,
 		function (data) {
 			if (data != 'SUCCESS') {
@@ -221,15 +221,15 @@ FlashairUtil.prototype.uploadFile = function () {
 };
 
 FlashairUtil.prototype.getTimeStampForFAT = function () {
-	let now = new Date();
+	var now = new Date();
 
-	let year = now.getFullYear() - 1980;
-	let month = now.getMonth() + 1;
-	let day = now.getDate();
-	let hour = now.getHours();
-	let minute = now.getMinutes();
-	let second = now.getSeconds() / 2;
-	let timeStamp = (year << 25) | (month << 21) | (day << 16) |
+	var year = now.getFullYear() - 1980;
+	var month = now.getMonth() + 1;
+	var day = now.getDate();
+	var hour = now.getHours();
+	var minute = now.getMinutes();
+	var second = now.getSeconds() / 2;
+	var timeStamp = (year << 25) | (month << 21) | (day << 16) |
 		(hour << 11) | (minute << 5) | second;
 	return timeStamp;
 };
@@ -254,8 +254,8 @@ FlashairUtil.prototype.makeDirectoryRequest = function (dirbase, dirname,
 };
 
 FlashairUtil.prototype.setWritableDir = function () {
-	let self = this;
-	let url = this._uploadBase + this._uploadWriteProtect + 'ON';
+	var self = this;
+	var url = this._uploadBase + this._uploadWriteProtect + 'ON';
 	this.httpRequest(this._httpMethodGet, url,
 	function (data) {
 		if (data != 'SUCCESS') {
@@ -270,7 +270,7 @@ FlashairUtil.prototype.setWritableDir = function () {
 };
 
 FlashairUtil.prototype.makeDirectory = function () {
-	let url = this._uploadBase + this._uploadDir + this._mkdirArgs.dirbase + '/' +  this._mkdirArgs.dirname;
+	var url = this._uploadBase + this._uploadDir + this._mkdirArgs.dirbase + '/' +  this._mkdirArgs.dirname;
 	this.httpRequest(this._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {

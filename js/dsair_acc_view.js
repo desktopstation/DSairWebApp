@@ -75,19 +75,19 @@ DsairAccView.prototype.DrawAccPanel = function () {
     //cv.save();
 
     // メーター背景の円描画
-    let cvSize = this._canvas.getAttribute('width');
+    var cvSize = this._canvas.getAttribute('width');
     this._cv.clearRect(0, 0, cvSize, cvSize);
 
     // Canvasの色、フォント
     this._cv.font = '16px \'arial\'';
 
     // ポイント表示
-    for (let y = 0; y < this._numRows; y++) {
-        for (let x = 0; x < this._numColumns; x++) {
+    for (var y = 0; y < this._numRows; y++) {
+        for (var x = 0; x < this._numColumns; x++) {
 
             var xx = x * 90 + 1;
             var yy = y * 91 + 1;
-            let info = this._controller.getAccInfo(x, y);
+            var info = this._controller.getAccInfo(x, y);
             //var index = (y + AccPageNo * 4) * 10 + x;
 
             this._cv.shadowBlur = 0;
@@ -113,7 +113,7 @@ DsairAccView.prototype.DrawAccPanel = function () {
             this._cv.shadowBlur = 8;
 
 
-            let aImageNo = info.type * 10 + info.status;
+            var aImageNo = info.type * 10 + info.status;
             //console.log(x, y, info.type, info.status, aImageNo);
             //異常系はデフォルト表示にする
             if (aImageNo > 51) {
@@ -185,13 +185,13 @@ DsairAccView.prototype.DrawAccPanel = function () {
 DsairAccView.prototype.onClickAccCanvas = function (e) {
     e.preventDefault();
 
-    let rect = e.target.getBoundingClientRect();
+    var rect = e.target.getBoundingClientRect();
 
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    let xx = Math.floor(x / 90);
-    let yy = Math.floor(y / 91);
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var xx = Math.floor(x / 90);
+    var yy = Math.floor(y / 91);
 
-    let index = yy * this._numColumns + xx;
+    var index = yy * this._numColumns + xx;
     this._controller.onClickAccCanvas(index);
 }

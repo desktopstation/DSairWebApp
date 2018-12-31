@@ -42,7 +42,7 @@ DsairCabView.prototype.addController = function (inController) {
 //
 
 DsairCabView.prototype.addrToStr = function (inAddr) {
-    let addrStr;
+    var addrStr;
     if (inAddr == 0) {
         addrStr = '-';
     } else {
@@ -52,8 +52,8 @@ DsairCabView.prototype.addrToStr = function (inAddr) {
 };
 
 DsairCabView.prototype.initLocAddress = function(inAddrList) {
-    let len = inAddrList.length;
-    for (let i = 0; i < len; i++) {
+    var len = inAddrList.length;
+    for (var i = 0; i < len; i++) {
         //console.log('%d:%d', i, inAddrList[i])
         $(this._addrLabelList[i]).text(this.addrToStr(inAddrList[i]));
     }
@@ -87,7 +87,7 @@ DsairCabView.prototype.setVisibleItems = function (inOnSwitch) {
 };
 
 DsairCabView.prototype.setLocAddr = function (inModeLocIndex) {
-    let aLocAddess = this._controller.getLocAddrByIndex(inModeLocIndex);
+    var aLocAddess = this._controller.getLocAddrByIndex(inModeLocIndex);
     console.log(aLocAddess);
 
     $(this._addrLabelList[inModeLocIndex]).text(this.addrToStr(aLocAddess));

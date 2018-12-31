@@ -6,13 +6,13 @@ if (DsairDebug === undefined) {
     var DsairDebug = false;
 }
 
-let DsairGlobal = {
+var DsairGlobal = {
 
 };
 
 // common constants
 // 共通定数
-const DsairConst = Object.freeze({
+var DsairConst = Object.freeze({
     powerOn: 1,
     powerOff: 0,
     dirFWD: 1,

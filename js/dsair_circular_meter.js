@@ -1,4 +1,4 @@
-let DsairCircularMeter = function (inCanvasName) {
+var DsairCircularMeter = function (inCanvasName) {
 
     DsairMeterBase.call(this, inCanvasName);
     this.circularMeterSuper = DsairMeterBase.prototype;
@@ -136,7 +136,7 @@ DsairCircularMeter.prototype.onLoad = function() {
 
 // scale変更時の処理
 DsairCircularMeter.prototype._updateScales = function () {
-    let canvas = document.getElementById(this._canvasName);
+    var canvas = document.getElementById(this._canvasName);
     this._width = canvas.width;
     this._height = canvas.height;
     if (this._width < this._height) {
@@ -156,13 +156,13 @@ DsairCircularMeter.prototype._updateScales = function () {
 //
 
 DsairCircularMeter.prototype._setCharProp = function (cv, prop) {
-    let fontProp = {
+    var fontProp = {
         fontStyle: '',
         fontSize: 1,
         fontName: ''
     };
 
-    for (let key of Object.keys(this._defaultCharProp)) {
+    for (var key of Object.keys(this._defaultCharProp)) {
         if (key in prop) {
             if (key in fontProp) {
                 //console.log('%s %s', key, prop[key]);
@@ -188,13 +188,13 @@ DsairCircularMeter.prototype._setCharProp = function (cv, prop) {
             }
         }
     }
-    let font = fontProp.fontStyle + ' ' + fontProp.fontSize + 'px \'' + fontProp.fontName + '\'';
+    var font = fontProp.fontStyle + ' ' + fontProp.fontSize + 'px \'' + fontProp.fontName + '\'';
     //console.log(font);
     cv.font = font;
 };
 
 DsairCircularMeter.prototype._setFillProp = function (cv, prop) {
-    for (let key of ['strokeStyle', 'fillStyle', 'shadowColor',
+    for (var key of ['strokeStyle', 'fillStyle', 'shadowColor',
         'shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'divisor']) {
         if (key in prop) {
             if (key == 'divisor') {
@@ -216,9 +216,9 @@ DsairCircularMeter.prototype._drawMeterBase = function () {
     this._cv.beginPath();
     this._cv.arc(this._center.x, this._center.y, this._scale / 2, 0, Math.PI * 2, false);
     // グラデーション指定
-    let grad = this._cv.createRadialGradient(this._center.x / 1, this._center.y / 1, 0, this._center.x, this._center.y, this._scale / 2);
+    var grad = this._cv.createRadialGradient(this._center.x / 1, this._center.y / 1, 0, this._center.x, this._center.y, this._scale / 2);
 
-    for (let gradinfo of this._gradationColorTable1) {
+    for (var gradinfo of this._gradationColorTable1) {
         grad.addColorStop(gradinfo.offset, gradinfo.color);
     }
     this._cv.fillStyle = grad;
@@ -236,7 +236,7 @@ DsairCircularMeter.prototype._drawMeterScaleChar = function () {
 // 速度単位表示
 DsairCircularMeter.prototype._drawMeterUnitChar = function () {
     this._setCharProp(this._cv, this._unitCharProp);
-    let aMetrics2 = this._cv.measureText(this._unit);
+    var aMetrics2 = this._cv.measureText(this._unit);
     this._cv.fillText(this._unit, 
         this._center.x - (aMetrics2.width / 2), 
         this._center.y + this._scale * this._unitCharCoefficient)
@@ -266,8 +266,8 @@ DsairCircularMeter.prototype._drawMeterBackground = function () {
 // 値表示
 DsairCircularMeter.prototype._drawMeterValue = function (inSpeed) {
     this._setCharProp(this._cv, this._valueCharProp);
-    let aLocMeterMaxSpeed = this._meterMaxSpeed;
-    let aMetrics = this._cv.measureText(Math.round(inSpeed * aLocMeterMaxSpeed / this._internalMeterRange));
+    var aLocMeterMaxSpeed = this._meterMaxSpeed;
+    var aMetrics = this._cv.measureText(Math.round(inSpeed * aLocMeterMaxSpeed / this._internalMeterRange));
     this._cv.fillText(Math.round(inSpeed * aLocMeterMaxSpeed / this._internalMeterRange),
         this._center.x - (aMetrics.width / 2),
         this._center.y + this._scale * this._meterValueYOffsetCoefficient);
@@ -283,10 +283,10 @@ DsairCircularMeter.prototype._getMeterDirectionString =function(inDir) {
 
 // 進行方向表示
 DsairCircularMeter.prototype._drawMeterDirection = function () {
-    let yFactor = this._meterDirectionYCoefficient;
-    let aDirStr = this._getMeterDirectionString(this._locDir);
+    var yFactor = this._meterDirectionYCoefficient;
+    var aDirStr = this._getMeterDirectionString(this._locDir);
     this._setCharProp(this._cv, this._directionCharProp);
-    let aMetrics3 = this._cv.measureText(aDirStr);
+    var aMetrics3 = this._cv.measureText(aDirStr);
     this._cv.fillText(aDirStr,
         this._center.x - (aMetrics3.width / 2),
         this._center.y + this._scale / yFactor);
@@ -317,9 +317,9 @@ DsairCircularMeter.prototype._drawMeterHand = function (inValue) {
     this._cv.shadowOffsetX = 0;
     this._cv.shadowOffsetY = 0;
     // 針(影)描画
-    let hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
-    let pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
-    let a90deg = Math.PI / 2;
+    var hRadian = (inValue + this._meterStartDeg) * Math.PI / 180;
+    var pos_x = this._cPoint(this._center, this._rLen - 25, hRadian);
+    var a90deg = Math.PI / 2;
     this._setFillProp(this._cv, this._handShadowFillProp);
     this._cv.beginPath();
     this._cv.moveTo(this._center.x + 8 * Math.cos(hRadian - a90deg),
@@ -335,9 +335,9 @@ DsairCircularMeter.prototype._drawMeterHand = function (inValue) {
 // メータの中心円を書く
 DsairCircularMeter.prototype._drawMeterCenter = function () {
     // グラデーション指定
-    let grad2 = this._cv.createRadialGradient(this._center.x / 1, this._center.y / 1, 0, 
+    var grad2 = this._cv.createRadialGradient(this._center.x / 1, this._center.y / 1, 0, 
         this._center.x, this._center.y, this._scale / 20);
-    for (let gradinfo of this._gradationColorTable2)    {
+    for (var gradinfo of this._gradationColorTable2)    {
         grad2.addColorStop(gradinfo.offset, gradinfo.color);
     }
     this._cv.fillStyle = grad2;
@@ -357,8 +357,8 @@ DsairCircularMeter.prototype._drawMeter = function () {
         this._CachedImage = true;
     }
    
-    // let inValue = Math.round((inSpeed * 270) / 1023);
-    let inValue = Math.round((this._locSpeed * this._meterRangeDeg) / (this._internalMeterRange - 1));
+    // var inValue = Math.round((inSpeed * 270) / 1023);
+    var inValue = Math.round((this._locSpeed * this._meterRangeDeg) / (this._internalMeterRange - 1));
     if (this._canvas == null) {
         this._canvas = document.getElementById(this._canvasName);
     }

@@ -15,7 +15,7 @@ Toast.prototype.show = function(message, timeout_ms) {
     $('.toast').remove();
     clearTimeout(this.timer);
     $('body').append('<div class="toast">' + message + '</div>');
-    let leftpos = $('body').width()/2 - $('.toast').outerWidth()/2;
+    var leftpos = $('body').width()/2 - $('.toast').outerWidth()/2;
     $('.toast').css('left', leftpos).hide().fadeIn('fast');
     
     this.timer = setTimeout(function() {

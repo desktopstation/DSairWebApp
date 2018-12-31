@@ -51,7 +51,7 @@ DsairPowerArbitor.prototype.getPowerOwner = function () {
 };
 
 DsairPowerArbitor.prototype.callPowerStateChangeCallback = function () {
-    for (let cb of this._powerStateChangeCallback) {
+    for (var cb of this._powerStateChangeCallback) {
         cb.onPowerStateChange(this._ownerName, this._powerStatus);
     }
 };

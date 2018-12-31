@@ -11,7 +11,7 @@ var DsairAccControl = function () {
     this._AccPageNo = 0;
     //this._AccStatus = []; //new Array(DsairConst.maxAccessories);
     this._AccTypes = []; // new Array(DsairConst.maxAccessories); //表示設定
-    for (let i = 0; i < DsairConst.maxAccessories; i++) {
+    for (var i = 0; i < DsairConst.maxAccessories; i++) {
         //this._AccStatus.push(0);
         this._AccTypes.push(0);
     }
@@ -109,7 +109,7 @@ DsairAccControl.prototype.getIndex  = function (x, y) {
 };
 
 DsairAccControl.prototype.getAccInfo = function (x, y) {
-    let index = this.getIndex(x, y);
+    var index = this.getIndex(x, y);
     return {
         index: index,
         status: this._accManager.getAccStatus(index), //this._AccStatus[index],
@@ -119,7 +119,7 @@ DsairAccControl.prototype.getAccInfo = function (x, y) {
 
 // 初期化時に保存していた値を復旧する
 DsairAccControl.prototype.onDataLoad = function () {
-    let accType = this._storage.getTypeImagesAcc();
+    var accType = this._storage.getTypeImagesAcc();
     if (accType == null) {
         this._AccType = accType;
     }

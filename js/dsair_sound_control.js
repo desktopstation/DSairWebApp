@@ -4,9 +4,9 @@ var DsairSoundControl = function () {
     this._view = null;
 
     this._audioElem = null;
-    //let path = location.pathname;
+    //var path = location.pathname;
     //console.log(path);
-    //let index = path.lastIndexOf('/');
+    //var index = path.lastIndexOf('/');
     //if (index >= 0) {
     //    this._currentPath = path.substr(0, index);
     //} else {
@@ -63,8 +63,8 @@ DsairSoundControl.prototype.isV1 = function () {
 
 // Convert data format from V1 to V2.
 DsairSoundControl.prototype.convertFileList = function () {
-    for (let i = 0; i < this._wlansd.length; i++) {
-        let elements = this._wlansd[i].split(',');
+    for (var i = 0; i < this._wlansd.length; i++) {
+        var elements = this._wlansd[i].split(',');
         this._wlansd[i] = new Array();
         this._wlansd[i].r_uri = elements[0];
         this._wlansd[i].fname = elements[1];
@@ -86,7 +86,7 @@ DsairSoundControl.prototype.cmptime = function (a, b) {
 
 // Making Path
 DsairSoundControl.prototype.makePath = function (dir) {
-    let arrPath = this._currentPath.split('/');
+    var arrPath = this._currentPath.split('/');
     //console.log(arrPath);
     if (this._currentPath == '/') {
         arrPath.pop();
@@ -157,7 +157,7 @@ DsairSoundControl.prototype.stopSound = function () {
 };
 
 DsairSoundControl.prototype.chageDirectory = function (n) {
-    let newDir;
+    var newDir;
     if (n == -1) {
         newDir = '..';
     } else {

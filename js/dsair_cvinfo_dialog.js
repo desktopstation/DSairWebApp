@@ -11,7 +11,7 @@ DsairCVEditDialog.prototype.open = function(inValue, inCallbackObject, inCallbac
     this._value = inValue;
     $(this._textAreaName).val(this._value.toString());
 
-    let self = this;
+    var self = this;
     $('p').css({
         'display': 'block'
     });
@@ -60,7 +60,7 @@ DsairCVEditDialog.prototype.open = function(inValue, inCallbackObject, inCallbac
                 $(self._textAreaName).val(self._value.toString());
             },
             'OK': function () {
-                let val = {
+                var val = {
                     cvval: self._value
                 };
                 self.super.close.call(self, val);

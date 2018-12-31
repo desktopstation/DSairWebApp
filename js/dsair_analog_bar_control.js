@@ -13,17 +13,17 @@ inherits(DsairAnalogBarControl, DsairSpeedControl);
 DsairAnalogBarControl.prototype.onClickCanvasDown = function (e) {
     e.preventDefault();
 
-    let rect = e.target.getBoundingClientRect();
+    var rect = e.target.getBoundingClientRect();
 
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
 
     if (y > this._zeroSpeedThreshold) {
         y = this._height;
     } else {
         y = ((y - (this._height - this._zeroSpeedThreshold)) * this._height) / this._zeroSpeedThreshold;
     }
-    let aCalcLocSpeed = this.CalcSpeedMeter(x, y);
+    var aCalcLocSpeed = this.CalcSpeedMeter(x, y);
     this._controller.onChangeSpeed(aCalcLocSpeed, false);
 };
 
@@ -32,20 +32,20 @@ DsairAnalogBarControl.prototype.onTouchCanvasUp = function (e) {
 
     if (e.changedTouches[0] != null) {
 
-        let touchObject = e.changedTouches[0];
-        let touchX = touchObject.pageX;
-        let touchY = touchObject.pageY;
+        var touchObject = e.changedTouches[0];
+        var touchX = touchObject.pageX;
+        var touchY = touchObject.pageY;
 
         // 要素の位置を取得
-        let clientRect = e.target.getBoundingClientRect();
-        let positionX = clientRect.left + window.pageXOffset;
-        let positionY = clientRect.top + window.pageYOffset;
+        var clientRect = e.target.getBoundingClientRect();
+        var positionX = clientRect.left + window.pageXOffset;
+        var positionY = clientRect.top + window.pageYOffset;
 
         // 要素内におけるタッチ位置を計算
-        let x = touchX - positionX;
-        let y = touchY - positionY;
+        var x = touchX - positionX;
+        var y = touchY - positionY;
 
-        let aCalcLocSpeed = this.CalcSpeedMeter(x, y);
+        var aCalcLocSpeed = this.CalcSpeedMeter(x, y);
         this._controller.onChangeSpeed(aCalcLocSpeed, true);
     }
 };
@@ -54,20 +54,20 @@ DsairAnalogBarControl.prototype.onTouchCanvasMove = function (e) {
 
     if (e.changedTouches[0] != null) {
 
-        let touchObject = e.changedTouches[0];
-        let touchX = touchObject.pageX;
-        let touchY = touchObject.pageY;
+        var touchObject = e.changedTouches[0];
+        var touchX = touchObject.pageX;
+        var touchY = touchObject.pageY;
 
         // 要素の位置を取得
-        let clientRect = e.target.getBoundingClientRect();
-        let positionX = clientRect.left + window.pageXOffset;
-        let positionY = clientRect.top + window.pageYOffset;
+        var clientRect = e.target.getBoundingClientRect();
+        var positionX = clientRect.left + window.pageXOffset;
+        var positionY = clientRect.top + window.pageYOffset;
 
         // 要素内におけるタッチ位置を計算
-        let x = touchX - positionX;
-        let y = touchY - positionY;
+        var x = touchX - positionX;
+        var y = touchY - positionY;
 
-        let aCalcLocSpeed = this.CalcSpeedMeter(x, y);
+        var aCalcLocSpeed = this.CalcSpeedMeter(x, y);
         this._controller.onChangeSpeed(aCalcLocSpeed, false);
     }
 };
@@ -84,7 +84,7 @@ DsairAnalogBarControl.prototype.CalcSpeedMeter = function (x, y) {
     if (y > this._height) {
         y = this._height;
     }
-    let aCalcLocSpeed = Math.round(this._height - y) * (this._speedRange - 1) / this._height;
+    var aCalcLocSpeed = Math.round(this._height - y) * (this._speedRange - 1) / this._height;
     return aCalcLocSpeed;
 };
 
