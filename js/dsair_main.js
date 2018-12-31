@@ -168,7 +168,7 @@ var ANA_Fwd = function(val) {
 };
 
 var ANA_Mode = function(mode) {
-    dsairApp.analogController.mode(mode);
+    dsairApp.analogController.Mode(mode);
 };
 
 //
