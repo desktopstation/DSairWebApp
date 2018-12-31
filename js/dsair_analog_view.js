@@ -3,6 +3,7 @@ var DsairAnalogView = function() {
     this._controller = null;
     this._loaded = false;
     this._powerStatus = DsairConst.powerOff;
+    this._isActive = false;
     this._needUpdateVisibleItems = false;
     window.addEventListener('load', this);
 };
@@ -124,8 +125,8 @@ DsairAnalogView.prototype.setPowerStatus = function (inPowerStatus) {
     }
 };
 
-DsairAnalogView.prototype.setVisibleItems = function (inPowerStatus) {
-    this._powerStatus = inPowerStatus;
+DsairAnalogView.prototype.setVisibleItems = function (inIsActive) {
+    this._isActive = inIsActive;
     if (this._loaded) {
         this._setVisibleItems();
     } else {
@@ -135,24 +136,22 @@ DsairAnalogView.prototype.setVisibleItems = function (inPowerStatus) {
 };
 
 DsairAnalogView.prototype._setVisibleItems = function () {
-    if (this._powerStatus == DsairConst.powerOff) {
-        // Power off
+    if (!this._isActive) {
+        // Another mode is active
         $('#btnAnaFwd').attr('disabled', true);
         $('#btnAnaRev').attr('disabled', true);
         $('#AnaStopButton').attr('disabled', true);
         $('#btnModeC1').attr('disabled', true);
         $('#btnModeC2').attr('disabled', true);
         $('#btnModeC3').attr('disabled', true);
-    } else if(this._powerStatus == DsairConst.powerOn) {
-        // Power on
+    } else {
+        // Analog modes
         $('#btnAnaFwd').removeAttr('disabled');
         $('#btnAnaRev').removeAttr('disabled');
         $('#AnaStopButton').removeAttr('disabled');
         $('#btnModeC1').removeAttr('disabled');
         $('#btnModeC2').removeAttr('disabled');
         $('#btnModeC3').removeAttr('disabled');
-    } else {
-        console.info('Unknown power status ', this._powerStatus);
     }
 };
 

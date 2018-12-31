@@ -68,8 +68,9 @@ dsairApp.analogController.addDsairCommand(dsairApp.command);
 dsairApp.analogController.addView(dsairApp.analogView);
 dsairApp.analogController.addSpeedMeter(dsairApp.analogBar);
 dsairApp.analogController.addPowerArbitor(dsairApp.powerArbitor);
+dsairApp.analogController.addToast(dsairApp.toast);
 dsairApp.analogBarController.addCabController(dsairApp.analogController);
-dsairApp.analogBar.addMeterController(dsairApp.analogBarController);
+dsairApp.analogBar.addMeterController(dsairApp.analogBarController)
 
 // accesory
 dsairApp.accManager.addDsairCommand(dsairApp.command);
@@ -168,7 +169,7 @@ var ANA_Fwd = function(val) {
 };
 
 var ANA_Mode = function(mode) {
-    dsairApp.analogController.mode(mode);
+    dsairApp.analogController.Mode(mode);
 };
 
 //

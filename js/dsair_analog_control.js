@@ -3,6 +3,7 @@ var DsairAnalogControl = function () {
     this._speedMeter = [];
     this._command = null;
     this._powerArbitor = null;
+    this._toast = null;
 
     this._LocSpeed = 0;
     this._LocSpeedLast = 0;
@@ -21,6 +22,7 @@ var DsairAnalogControl = function () {
     this._DelayInterval = 0;
     this._SpeedDelaySpeedCnt = 1;
     this._powerStatus = DsairConst.powerOff;
+    this._isActive = false;
 };
 //
 DsairAnalogControl.prototype._name = 'Analog controller';
@@ -44,6 +46,9 @@ DsairAnalogControl.prototype.addPowerArbitor = function (inArbitor) {
     this._powerArbitor.addPowerStateChangeCallback(this);
 };
 
+DsairAnalogControl.prototype.addToast = function (inToast) {
+    this._toast = inToast;
+};
 //
 
 DsairAnalogControl.prototype.Free = function () {
@@ -139,6 +144,7 @@ DsairAnalogControl.prototype.onChangeSpeed = function (inSpeed, inUpdateFlag) {
     var powerOwner = this._powerArbitor.getPowerOwner();
     if (!((powerOwner == '') || (powerOwner == this._name))) {
         // DCCがONの時は無効
+        this._toast.show('Please turn off DCC.');
         return;
     }
 
@@ -238,9 +244,11 @@ DsairAnalogControl.prototype.onPowerStateChange = function (inName, inPower) {
     if (inName == this._name) {
         this._powerStatus = inPower;
         //this._dsairCommand.setPower(this._powerStatus);
+        this._isActive = true;
     } else {
         this._powerStatus = DsairConst.powerOff;
+        this._isActive = false;
     }
     this._view.setPowerStatus(this._powerStatus);
-    this._view.setVisibleItems(this._powerStatus);
+    this._view.setVisibleItems(this._isActive);
 };
