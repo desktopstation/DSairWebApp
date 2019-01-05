@@ -5,6 +5,8 @@ var DsairAnalogView = function() {
     this._powerStatus = DsairConst.powerOff;
     this._isActive = false;
     this._needUpdateVisibleItems = false;
+
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
@@ -14,6 +16,9 @@ DsairAnalogView.prototype.setController = function (inController) {
 
 DsairAnalogView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -23,6 +28,10 @@ DsairAnalogView.prototype.handleEvent = function (e) {
 };
 
 DsairAnalogView.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $('#ANA_SPEED-value').val(0);
     $('#ANA_SPEED-option').val("%");
     var self = this;

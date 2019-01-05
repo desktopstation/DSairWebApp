@@ -4,10 +4,16 @@ var DsairDialog = function (inDialogName, inClassName) {
     this._className = inClassName;
     this._callbackObject = null;
     this._callbackMethodName = '';
+    this._loaded = false;
+    window.addEventListener('DOMContentLoaded', this);
+    window.addEventListener('load', this);
 };
 
 DsairDialog.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -17,6 +23,10 @@ DsairDialog.prototype.handleEvent = function (e) {
 };
 
 DsairDialog.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $(this._dialogName).dialog({ autoOpen: false });
 };
 

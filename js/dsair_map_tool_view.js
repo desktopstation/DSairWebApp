@@ -11,6 +11,9 @@ var DsairMapToolView = function (inCanvasName) {
     this._mapHeight = 0;
     this._imagMapData = new Image();
     this._imagMapData.src = this._imageFile;
+    this._loaded = false;
+
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
@@ -18,6 +21,9 @@ DsairMapToolView.prototype._imageFile = DsairConst.documentRootDir + '/c/acc/RAI
 
 DsairMapToolView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -30,6 +36,10 @@ DsairMapToolView.prototype.handleEvent = function (e) {
 };
 
 DsairMapToolView.prototype.onLoad = function() {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);
     this._cv = this._canvas.getContext('2d');
     this._cvWidth = this._canvas.getAttribute('width');

@@ -1,10 +1,15 @@
 //
 var DsairTabControl = function() {
+    this._loaded = false;
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
 DsairTabControl.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -14,6 +19,10 @@ DsairTabControl.prototype.handleEvent = function (e) {
 };
 
 DsairTabControl.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $('input[type=submit], a, button')
         .button()
         .click(function (event) {

@@ -18,8 +18,8 @@ var DsairMapControl = function () {
     this._mapHeight = this._defaultMapHeight;
     var len = this._MaxWidth * this._MaxHeight;
     for (var i = 0; i <  len; i++) {
-        this._Map_AccAddr.push(0);
-        this._Map_Image.push(0);
+        this._MapAccAddr.push(0);
+        this._MapImage.push(0);
     }
 };
 

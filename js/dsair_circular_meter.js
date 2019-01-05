@@ -127,6 +127,10 @@ DsairCircularMeter.prototype._meterCenterCoefficient = 1 / 20;
 //
 
 DsairCircularMeter.prototype.onLoad = function() {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     this._updateScales();
     this._CacheMeterBG = new Image();
     this._drawMeterBackground();

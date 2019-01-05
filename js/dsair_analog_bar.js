@@ -7,24 +7,17 @@ var DsairAnalogBar = function (inCanvasName) {
     this._barHeight = 0;
     this._imgBarMask = new Image();
     this._imgBarMask.src = this.imageFilename;
-    window.addEventListener('load', this);
 };
 
 inherits(DsairAnalogBar, DsairMeterBase);
 
 DsairAnalogBar.prototype.imageFilename = DsairConst.documentRootDir + '/img/speedobar_mask.png';
 
-DsairAnalogBar.prototype.handleEvent = function (e) {
-    switch (e.type) {
-        case 'load':
-            this.onLoad();
-            break;
-        default:
-            break;
-    }
-};
-
 DsairAnalogBar.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);
     this._ctx = this._canvas.getContext('2d');
     this._barWidth = this._canvas.width;

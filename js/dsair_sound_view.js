@@ -1,9 +1,14 @@
 var DsairSoundView = function () {
+    this._loaded = false;
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
 DsairSoundView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -13,6 +18,10 @@ DsairSoundView.prototype.handleEvent = function (e) {
 };
 
 DsairSoundView.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $('.soundbutton').buttonset();
 };
 

@@ -3,6 +3,9 @@ var DsairConfigView = function ()  {
     this._initialized = false;
     this._sliderValue = 0;
     this._needUpdateSlider = false;
+    this._loaded = false;
+
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
@@ -19,6 +22,9 @@ DsairConfigView.prototype._sliderProp = {
 
 DsairConfigView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -28,7 +34,10 @@ DsairConfigView.prototype.handleEvent = function (e) {
 };
 
 DsairConfigView.prototype.onLoad = function() {
-
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $('#protcolset').buttonset();
     $('#protcolset_acc').buttonset();
 

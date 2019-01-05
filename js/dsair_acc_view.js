@@ -29,6 +29,7 @@ var DsairAccView = function (inCanvasName) {
     this._imageACC_391D = new Image();
     this._imageACC_391D.src = this._imageDir + '/SIGNAL_76391_RED.png';
 
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
@@ -36,6 +37,9 @@ DsairAccView.prototype._imageDir = DsairConst.documentRootDir + '/c/acc';
 
 DsairAccView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -48,11 +52,14 @@ DsairAccView.prototype.handleEvent = function (e) {
 };
 
 DsairAccView.prototype.onLoad = function() {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);
     this._cv = this._canvas.getContext('2d');
     this._canvas.addEventListener("mousedown", this);
     //this.DrawAccPanel();
-    this._loaded = true;
     if (!this._drawn) {
         this.DrawAccPanel();
     }

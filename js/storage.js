@@ -233,7 +233,7 @@ Storage.prototype.LoadMapDatas = function () {
 	var aMapWidth = localStorage.getItem('MAPDAT-WIDTH');
 	var aMapHeight = localStorage.getItem('MAPDAT-HEIGHT');
 
-	console.log(aMapWidth, aMapHeight);
+	//console.log(aMapWidth, aMapHeight);
 	if (aMapWidth != null) {
 		this._MapWidth = aMapWidth;
 	}

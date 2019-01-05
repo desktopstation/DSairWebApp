@@ -4,11 +4,16 @@ var DsairCVView= function () {
     this._CVNo = 0;
     this._CVVal = 0;
     this._loaded = false;
+
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
 DsairCVView.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -18,11 +23,14 @@ DsairCVView.prototype.handleEvent = function (e) {
 };
 
 DsairCVView.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     var self = this;
     $("#CVList").change(function () {
         self._controller.ChangeCVDescription();
     });
-    this._loaded = true;
     $('#CVList').val(this._CVNo.toString());
     $('#CVValue').val(this._CVVal.toString());
 };

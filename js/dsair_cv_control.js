@@ -80,6 +80,8 @@ DsairCVControl.prototype.cvWriteCallback = function (arg) {
     if (arg.isOK) {
         //console.log('setCV');
         this._command.setCV(this._CVNo, this._CVVal);
+        var self = this;
+        setTimeout(self._command.writePing, 200);
     }
 };
 
@@ -87,6 +89,8 @@ DsairCVControl.prototype.cvReadCallback = function (arg) {
     if (arg.isOK) {
         //console.log('getCV');
         this._command.getCV(this._CVNo);
+        var self = this;
+        setTimeout(self._command.writePing, 200);
     }
 };
 

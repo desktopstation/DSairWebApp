@@ -420,6 +420,17 @@ FlashairUtilMock.prototype.requestConfig = function (mastercode, args) {
 	}
 };
 
+FlashairUtilMock.prototype.sendCommand = function (arg, obj, method) {
+	if (obj === undefined) {
+		this.writeShmem(0, 64, arg, null, null);
+	} else {
+		this.writeShmem(0, 64, arg, null, null);
+		setTimeout(function () {
+			obj[method]('SUCCESS');
+		}, this._responseTime);
+	}
+};
+
 FlashairUtilMock.prototype.readShmem = function (start, length, respCb, errCb) {
 	this.super.readShmem.call(this, start, length, respCb, errCb);
 	let self = this;
@@ -475,7 +486,7 @@ FlashairUtilMock.prototype.findLocInfo = function (addr) {
 
 FlashairUtilMock.prototype.setDirection = function (args) {
 	let locAddrList = args[0].split('/');
-	let direction = (args[1] == 'FWD' ? 0 : 1);
+	let direction = (args[1] == '1' ? 0 : 1);
 	for (let addr of locAddrList) {
 		let loc = this.findLocInfo(addr);
 		loc.direction = direction;
@@ -541,6 +552,10 @@ FlashairUtilMock.prototype.setCV = function (/*args*/) {
 
 };
 
+FlashairUtilMock.prototype.getCV = function (/*args*/) {
+
+};
+
 FlashairUtilMock.prototype.writeShmem = function (start, length, param, respCb, errCb) {
 	this.super.writeShmem.call(this, start, length, param, respCb, errCb);
 	let shmParam;
@@ -585,8 +600,11 @@ FlashairUtilMock.prototype.writeShmem = function (start, length, param, respCb, 
 		case 'TO':
 			this.setAccessory(argList);
 			break;
-		case 'SC':
+		case 'SV':
 			this.setCV(argList);
+			break;
+		case 'GV':
+			this.getCV(argList);
 			break;
 		default:
 			break;

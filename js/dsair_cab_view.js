@@ -2,6 +2,7 @@ var DsairCabView = function () {
     this._controller = null;
     this._loaded = false;
     this._onSwitch = DsairConst.powerOff;
+    window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
@@ -14,6 +15,9 @@ DsairCabView.prototype._addrLabelList = [
 
 DsairCabView.prototype.handleEvent = function (e) {
 	switch (e.type) {
+        case 'DOMContentLoaded':
+            this.onLoad();
+            break;
         case 'load':
             this.onLoad();
 			break;
@@ -23,12 +27,15 @@ DsairCabView.prototype.handleEvent = function (e) {
 };
 
 DsairCabView.prototype.onLoad = function () {
+    if (this._loaded) {
+        return;
+    }
+    this._loaded = true;
     $('#funcbox1').buttonset();
     $('#addrselector').buttonset();
     $("button").button();
     $('input[type="checkbox"]').button();
     $('input[type="radio"]').button();
-    this._loaded = true;
     this._setVisibleItems();
     this.UpdateFunctionButtonsAll();
 };
