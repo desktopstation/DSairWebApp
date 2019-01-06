@@ -15,7 +15,7 @@ DsairAnalogBar.prototype.imageFilename = DsairConst.documentRootDir + '/img/spee
 
 DsairAnalogBar.prototype.onLoad = function () {
     if (this._loaded) {
-        return;
+        //return;
     }
     this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);

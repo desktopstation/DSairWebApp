@@ -37,7 +37,7 @@ DsairMapToolView.prototype.handleEvent = function (e) {
 
 DsairMapToolView.prototype.onLoad = function() {
     if (this._loaded) {
-        return;
+        //return;
     }
     this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);
