@@ -1,19 +1,23 @@
 // 
-// 
+// for debugging
+//
 var FlashairUtilMock = function () {
 	FlashairUtil.call(this);
 	this.super = FlashairUtil.prototype;
 	this._sharedMemory = this._initVal.repeat(512);
 	this._isPowerOn = false;
-	this._statusInfo = [ 'N', 1, 0, 0, 0, 0, 0, 0];
+	this._statusInfo = [ 'N', 1, 9, 0, 0, 0, 0, 0];
 	this._replyMessage = [0, 0, 0];
-	this._replyAcc = ['acc', 'reply'];	// TODO:
 	this._locList = [];
 	this._locListSeq = 0;
+	this._accStatus = new Uint8Array(this._nAccBytes);
 	this.updateShm();
 };
 
 inherits(FlashairUtilMock, FlashairUtil);
+
+FlashairUtilMock.accProtocolMM2 = 12287;
+FlashairUtilMock.accProtocolDCC = 14335;
 
 FlashairUtilMock.prototype._initVal = ' ';
 FlashairUtilMock.prototype._masterCode = '9876543210';
@@ -23,6 +27,7 @@ FlashairUtilMock.prototype._flashairFirmwareVersion = 'F15DBW3BW4.00.03';
 FlashairUtilMock.prototype._responseTime = 50;// ms
 FlashairUtilMock.prototype._responseLength = 264;
 FlashairUtilMock.prototype._maxLocNo = 8;
+FlashairUtilMock.prototype._nAccBytes = Math.ceil(DsairConst.maxAccessories / 8);
 FlashairUtilMock.prototype._jsonData = `
 {
     "cvdata": [
@@ -411,7 +416,7 @@ FlashairUtilMock.prototype.requestConfig = function (mastercode, args) {
 					this._appSSID = param[1];
 					break;
 				case 'APPNETWORKKEY':
-				this._appNetworkKey = param[1];
+					this._appNetworkKey = param[1];
 					break;
 				default:
 					break;
@@ -544,8 +549,28 @@ FlashairUtilMock.prototype.setFunction = function (args) {
 	}
 };
 
-FlashairUtilMock.prototype.setAccessory = function (/*args*/) {
+FlashairUtilMock.prototype.setAccessory = function (args) {
+	if (args.length != 2) {
+		console.info(args);
+		return;
+	}
+	let accNo = args[0] - 1;
+	let accOnOff = args[1];
 
+	if (accNo < FlashairUtilMock.accProtocolMM2) {
+		console.log('Invalid acc address %d', accNo);
+		return;
+	} else if (accNo < FlashairUtilMock.accProtocolDCC) {
+		accNo -= FlashairUtilMock.accProtocolMM2;
+	} else {
+		accNo -= FlashairUtilMock.accProtocolDCC;
+	}
+	console.info('Acc addr = %d', accNo);
+	if (accOnOff == '1') {
+		this._accStatus[accNo >> 3] |= (1 << (accNo & 0x07));
+	} else {
+		this._accStatus[accNo >> 3] &= ~(1 << (accNo & 0x07));
+	}
 };
 
 FlashairUtilMock.prototype.setCV = function (/*args*/) {
@@ -616,8 +641,12 @@ FlashairUtilMock.prototype.writeShmem = function (start, length, param, respCb, 
 FlashairUtilMock.prototype.updateShm = function () {
 	let aStatusStr = this._statusInfo.join(',');
 	let aReplyMsg = this._replyMessage.join(',');
-	let aReplyAcc = this._replyAcc.join(',');
+	let aReplyAcc = '';
 	let aLocList = [];
+	for (let i = 0; i < 32; i++) {
+		aReplyAcc += ('0' + this._accStatus[i].toString(16)).substr(-2);
+	}
+	console.log(aReplyAcc);
 	for (let loc of this._locList) {
 		//console.log(loc);
 		let aLocInfo = [
@@ -633,7 +662,7 @@ FlashairUtilMock.prototype.updateShm = function () {
 	}
 	let aReplyLoc = aLocList.join('/');
 	let aResponse = [aStatusStr, aReplyMsg, aReplyAcc, aReplyLoc].join(';');
-	//console.log('"%s"', aResponse);
+	console.log('"%s", %d', aResponse, aResponse.length);
 	if (aResponse.length < this._responseLength) {
 		aResponse += this._initVal.repeat(this._responseLength - aResponse.length);
 	} else if (aResponse.length > this._responseLength) {
