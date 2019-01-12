@@ -12,7 +12,7 @@ var DsairGlobal = {
 
 // common constants
 // 共通定数
-var DsairConst = Object.freeze({
+var DsairConst = {
     powerOn: 1,
     powerOff: 0,
     dirFWD: 1,
@@ -21,5 +21,5 @@ var DsairConst = Object.freeze({
     protocolDCC: 'DCC',
     maxAccessories: 2044,
     documentRootDir: DsairDebug ? '.' : 'SD_WLAN'
-});
+};
 
