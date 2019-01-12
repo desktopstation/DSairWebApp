@@ -1,3 +1,4 @@
+//
 var DsairCircularMeter = function (inCanvasName) {
 
     DsairMeterBase.call(this, inCanvasName);
@@ -250,7 +251,7 @@ DsairCircularMeter.prototype._drawMeterBackground = function () {
 
     if (this._canvas == null) {
         this._canvas = document.getElementById(this._canvasName);
-        this._cv = this._canvas.getContext("2d");
+        this._cv = this._canvas.getContext('2d');
     }
     // メーター背景の描画
     this._drawMeterBase();
