@@ -81,7 +81,9 @@ DsairMapPanelView.prototype.onClickLayoutCanvas = function (e) {
 };
 
 DsairMapPanelView.prototype.DrawLayoutPanel = function () {
-
+    if (!this._loaded) {
+        return;
+    }
     if (this._canvas == null) {
         this._canvas = document.getElementById(this._canvasName);
         this._cv = this._canvas.getContext('2d');

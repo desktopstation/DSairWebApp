@@ -1,5 +1,4 @@
 //
-// for r2f
 //
 var DsairCabControl = function () {
 
@@ -11,12 +10,13 @@ var DsairCabControl = function () {
     this._dsairCabDialog = null;
     this._configControl = null;
     this._powerArbitor = null;
+    this._accManager = null;
     this._toast = null;
     this._powerStateChangeCallback = [];
     this._distStateNotifyCallback = [];
     this._intervalTimeout = 0;
 
-    // 機関車関係
+    // Locomotive settings
     this._locAddr = 3;
     this._locSpeed = [0, 0, 0, 0];
     this._lastLocSpeed = [0, 0, 0, 0];
@@ -38,20 +38,20 @@ var DsairCabControl = function () {
 
     this._modeLocIndex = 0;
     this._modeDblHeading = false;
-    this._readCVNo = 0;     // r2f
-    this._readCVVal = 0;    // r2f
+    this._readCVNo = 0;
+    this._readCVVal = 0;
 
     this._LastUpdateTime = 0;
-    this._intervalUpdateLimit = 0; // r2f
-    this._distStatusVolt = 0; // r2f
-    this._distStatusCurrent = 0; // r2f
-    this._distStatusPower = 0; // r2f
-    this._distStatusFirmver = 0; // r2f
-    this._distStatusError = 0; // r2f
-    this._distStatusHardver = 0; // r2f
-    this._distStatusSeqNo = 0; // r2f
-    this._distStatusReplyMsg = 0; // r2f
-    this._statusReplyAcc = 0; // r2f
+    this._intervalUpdateLimit = 0;
+    this._distStatusVolt = 0;
+    this._distStatusCurrent = 0;
+    this._distStatusPower = 0;
+    this._distStatusFirmver = 0;
+    this._distStatusError = 0;
+    this._distStatusHardver = 0;
+    this._distStatusSeqNo = 0;
+    this._distStatusReplyMsg = 0;
+    this._statusReplyAcc = 0;
     this._locDistInfo = [];
 
     window.addEventListener('load', this);
@@ -66,7 +66,7 @@ DsairCabControl.prototype._defaultLocProtocol = DsairConst.protocol;
 DsairCabControl.prototype._defaultLocMeterMaxSpeed = 240;
 DsairCabControl.prototype._cmdInterval = 500;
 DsairCabControl.prototype._statusInterval = 900;
-DsairCabControl.prototype._numAddresses = 4;    // 同時に管理するアドレス数
+DsairCabControl.prototype._numAddresses = 4;    // Number of addresses managed simultaneously
 DsairCabControl.prototype._numFunctions = 29;
 DsairCabControl.prototype._maxInternalSpeed = 1024;
 DsairCabControl.prototype._intervalUpdateLimitValue = 4;
@@ -133,6 +133,10 @@ DsairCabControl.prototype.addPowerArbitor = function (inArbitor) {
 
 DsairCabControl.prototype.addDistStateNotifyCallback = function (inCallback) {
     this._distStateNotifyCallback.push(inCallback);
+};
+
+DsairCabControl.prototype.addAccManager = function (inManager) {
+    this._accManager = inManager;
 };
 
 DsairCabControl.prototype.addToast = function (inToast) {
@@ -417,7 +421,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
         console.info('Invalid status[0]');
         return;
     }
-    
+
     if (this._intervalTimeout > 0) {
         this._intervalTimeout--;
     } else {
@@ -435,12 +439,11 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
                 if (aPower_Num == DsairConst.powerOff) {
                     this._powerArbitor.powerOff(this._name);
                 }
-                else
-                {
+                else {
                     console.log('(Remoted)On');
                     if (!this._powerArbitor.tryPowerOn(this._name)) {
                         this._toast.show('Please turn off analog mode.');
-                    }                
+                    }
                 }
             }
         }
@@ -480,11 +483,12 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
         cbArg.cvNo = -1;
         cbArg.cvValue = -1;
     }
+
+    // アクセサリ配信データ取得
     
-    // if (this._powerStatus == DsairConst.powerOff) {
-    //     return;
-    // }
-    //機関車の配信データ取得
+    this._accManager.getStatusCallback(aReplyStrArray[2], this._statusFirmVer);
+ 
+    // 機関車の配信データ取得
 
     var aLocDistArrayRaw = aReplyStrArray[3].split('/');
 
@@ -525,25 +529,14 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
 
                 if ((this._locSpeed[j] / 4) != aLocSpd) {
                     aMeterChanged = true;
-                    // if (this._powerStatus == DsairConst.powerOff) {
-                    //     this._locSpeed[j] = 0;
-                    // } else {
-                        this._locSpeed[j] = aLocSpd * 4;
-                    // }
+                    this._locSpeed[j] = aLocSpd * 4;
                 }
 
                 for (var k = 0; k < this._numFunctions; k++) {
-                    // if (this._powerStatus == DsairConst.powerOff) {
-                    //     if (this._locFuncStatus[j][k] != 0) {
-                    //         this._locFuncStatus[j][k] = 0;
-                    //         aFuncChanged = true;
-                    //     }
-                    // } else {
-                        if (this._locFuncStatus[j][k] != (aLocFunc >> k) & 1) {
-                            this._locFuncStatus[j][k] = (aLocFunc >> k) & 1;
-                            aFuncChanged = true;
-                        }
-                    // }
+                    if (this._locFuncStatus[j][k] != (aLocFunc >> k) & 1) {
+                        this._locFuncStatus[j][k] = (aLocFunc >> k) & 1;
+                        aFuncChanged = true;
+                    }
                 }
 
                 // 表示中の場合は更新
@@ -714,7 +707,7 @@ DsairCabControl.prototype.onPowerStateChange = function (inName, inPower) {
     }
     if (this._powerStatus == DsairConst.powerOff) {
         //this.onClickStop(); 
-        this._powerStatus = DsairConst.powerOff;       
+        this._powerStatus = DsairConst.powerOff;
         //this.initFuncStatus();
         this._dsairCabView.UpdateFunctionButtonsAll();
         //this._locDistInfo = [];

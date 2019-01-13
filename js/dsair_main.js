@@ -59,6 +59,7 @@ dsairApp.cabController.addCabView(dsairApp.cabView);
 dsairApp.cabController.addCabDialog(dsairApp.cabDialog);
 dsairApp.cabController.addCfgControl(dsairApp.configController);
 dsairApp.cabController.addPowerArbitor(dsairApp.powerArbitor);
+dsairApp.cabController.addAccManager(dsairApp.accManager);
 dsairApp.cabController.addToast(dsairApp.toast);
 dsairApp.meterController.addCabController(dsairApp.cabController);
 dsairApp.speedMeter.addMeterController(dsairApp.meterController);
@@ -80,6 +81,7 @@ dsairApp.accManager.addCfgControl(dsairApp.configController);
 dsairApp.accController.addStorage(dsairApp.storage);
 dsairApp.accController.addAccManager(dsairApp.accManager);
 dsairApp.accController.addView(dsairApp.accView);
+dsairApp.accController.addToast(dsairApp.toast);
 
 // map
 dsairApp.mapController.addStorage(dsairApp.storage);

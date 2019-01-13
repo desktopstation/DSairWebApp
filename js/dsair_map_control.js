@@ -48,6 +48,7 @@ DsairMapControl.prototype.addPanelView = function (inView) {
 
 DsairMapControl.prototype.addAccManager = function (inManager) {
     this._accManager = inManager;
+    this._accManager.addAccChangeCallback(this);
 };
 
 DsairMapControl.prototype.addMsgDialog = function (inDialog) {
@@ -114,26 +115,29 @@ DsairMapControl.prototype.onClickLayoutPanel = function (inChipIndex) {
                 this._toast.show('The accessory address do not assigned.');
             }
         }
+        this._mapPanelView.DrawLayoutPanel();
     } else if (this._ChipToolIndex == 1) {
         // アドレス設定モード
         if (this._mapImage[this._ChipIndex] < this._chipToolAddressable) {
             this._toast.show('Can not assign accessory addres on this chip .');
+            this._mapPanelView.DrawLayoutPanel();
         } else {
             this._addressInputDialog.open(this._mapAccAddr[this._ChipIndex], this, 'addressInputCallback', null);
-            // 再描画はcallbackで実施するので、returnする
-            return;
         }
     } else {
         // 線路描画モード
         this._mapImage[this._ChipIndex] = this._ChipToolIndex;
+        this._mapPanelView.DrawLayoutPanel();
     }
-    this._mapToolView.DrawLayoutTool();
+};
+
+DsairMapControl.prototype.onAccValueChange = function (/*inNo, inStatus*/) {
     this._mapPanelView.DrawLayoutPanel();
 };
 
 DsairMapControl.prototype.addressInputCallback = function (arg) {
     this._mapAccAddr[this._ChipIndex] = arg.addr;
-    this._mapToolView.DrawLayoutTool();
+    //this._mapToolView.DrawLayoutTool();
     this._mapPanelView.DrawLayoutPanel();
 };
 
@@ -174,6 +178,7 @@ DsairMapControl.prototype.getChipToolIndex = function () {
 
 // 保存していた値を復旧する
 DsairMapControl.prototype.onDataLoad = function () {
+    this._mapToolView.DrawLayoutTool();
     this._onDataLoad(this._storage.getMapInfo());
 };
 
