@@ -53,7 +53,7 @@ DsairCVControl.prototype.onClickCVWrite = function () {
     var aCVValue = this._view.getCVValue();
 
     if (this._command.getPowerStatus() == DsairConst.powerOn) {
-        this._msgDialog.open('Please <b>power off</b>.', false, null, '')
+        this._msgDialog.open('Please <b>power off</b>.', false, null, '');
     } else {
         this._msgDialog.open('Would you write CV No.' + 
             aCVNo.toString() + '=' + aCVValue.toString() + '?',
@@ -65,7 +65,7 @@ DsairCVControl.prototype.onClickCVRead = function () {
     var aCVNo = this._view.getCVNo();
 
     if (this._command.getPowerStatus() == DsairConst.powerOn) {
-        this._msgDialog.open('Please <b>power off</b>.', false, null, '')
+        this._msgDialog.open('Please <b>power off</b>.', false, null, '');
     } else {
         this._msgDialog.open('Would you read CV No.' + aCVNo.toString() + '?',
             true, this, 'cvReadCallback');
@@ -101,7 +101,7 @@ DsairCVControl.prototype.cvReadCallback = function (arg) {
 DsairCVControl.prototype.cvEditCallback = function (cbArg) {
     //console.log(cbArg);
     this._CVVal = cbArg.cvval;
-    this._view.setCVValue(this._CVNo);
+    this._view.setCVValue(this._CVVal);
 };
 
 DsairCVControl.prototype.onDistStateNotify = function(cbArg) {
@@ -136,15 +136,16 @@ DsairCVControl.prototype.RegisterCVList = function () {
 };
 
 DsairCVControl.prototype.ReadCVListCallback = function (jsonObj) {
+    var i;
     if (jsonObj != null) {
         var len = jsonObj.cvdata.length;
 
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             this._view.appendCVList('<option value=' + jsonObj.cvdata[i].cvnum + '>' +
             jsonObj.cvdata[i].cvname + '</option>');
         }
     } else {
-        for (var i = 0; i < 256; i++) {
+        for (i = 1; i <= 1024; i++) {
             this._view.appendCVList('<option value=' + i.toString() + '>CV' + i.toString() + '     </option>');
         }
     }
