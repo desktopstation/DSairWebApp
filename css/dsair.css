@@ -125,7 +125,7 @@
 
 #soundlist{
 	font-size:28px;
-	width:600px;
+	width:700px;
 	height:320px;
 	overflow:auto;
 	overflow-y:scroll;
@@ -326,7 +326,7 @@ ul#tabcontrol li.active a:hover {
 	
 }
 
-#CVValueLabel{
+#CVValueLabel, #CVReadValueLabel{
 	margin:10px;
 	font-size:1.5em;
 }
