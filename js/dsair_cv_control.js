@@ -5,10 +5,13 @@ var DsairCVControl = function () {
     this._cvEditDialog = null;
     this._CVNo = 1;
     this._CVVal = 3;
+    this._fileControl = new DsairFileControl(this.cvdataDir);
+    this._fileControl.addControl(this, 'getCVFileListCallback');
     window.addEventListener('load', this);
 };
 
-DsairCVControl.prototype.cvdataDefault = 'cvdata/default.json';
+DsairCVControl.prototype.cvdataDir = DsairConst.documentRootDir + '/' + 'cvdata';
+DsairCVControl.prototype.cvdataDefault = DsairCVControl.prototype.cvdataDir + '/' + 'default.json';
 
 DsairCVControl.prototype.handleEvent = function (e) {
     switch (e.type) {
@@ -25,17 +28,19 @@ DsairCVControl.prototype.onLoad = function () {
     this._view.setCVValue(this._CVVal);
     this.RegisterCVList();
     this.ChangeCVDescription();
+    this.getCVFileList();
 };
 
 //
 
 DsairCVControl.prototype.addDsairCommand = function (inCommand) {
     this._command = inCommand;
+    this._fileControl.addDsairCommand(inCommand);
 };
 
 DsairCVControl.prototype.addView = function (inView) {
     this._view = inView;
-    this._view.addControl(this);
+    this._view.addControl(this, 'changeCVFileList');
 };
 
 DsairCVControl.prototype.addMsgDialog = function (inDialog) {
@@ -149,4 +154,35 @@ DsairCVControl.prototype.ReadCVListCallback = function (jsonObj) {
             this._view.appendCVList('<option value=' + i.toString() + '>CV' + i.toString() + '     </option>');
         }
     }
+};
+
+DsairCVControl.prototype.getCVFileList = function () {
+    this._fileControl.getFileList('.');
+};
+
+DsairCVControl.prototype.getCVFileListCallback = function (fileList) {
+    this._view.clearCVFileList();
+    var l = fileList.length;
+    var i;
+    for (i = 0; i < l; i++) {
+        if ((fileList[i].attr & 0x10) != 0) {
+            continue;
+        }
+        var aExt = this._fileControl.splitExt(fileList[i].fname.toLowerCase());
+        if (aExt[1] == 'json') {
+            this._view.addCVFileList(fileList[i].fname, i);
+        }
+    }
+};
+
+DsairCVControl.prototype.changeCVFileList = function (val) {
+    var fileInfo = this._fileControl.getFileItem(val);
+    var currentPath = this._fileControl.getCurrentPath();
+    var filename;
+    if (currentPath == '/') {
+        filename = currentPath + fileInfo.fname;
+    } else {
+        filename = currentPath + '/' + fileInfo.fname;
+    }
+    this._command.getJson(filename, this, 'ReadCVListCallback');
 };

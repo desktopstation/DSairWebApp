@@ -4,6 +4,11 @@ var DsairSoundView = function () {
     window.addEventListener('load', this);
 };
 
+DsairSoundView.prototype.dirIcon = DsairConst.documentRootDir + '/img/file_dir.png';
+DsairSoundView.prototype.extList = [];
+DsairSoundView.prototype.extList['mp3'] = { icon: DsairConst.documentRootDir + '/img/file_mp3.png'};
+DsairSoundView.prototype.extList['pdf'] = { icon: DsairConst.documentRootDir + '/img/file_pdf.png'};
+
 DsairSoundView.prototype.handleEvent = function (e) {
     switch (e.type) {
         case 'DOMContentLoaded':
@@ -29,15 +34,24 @@ DsairSoundView.prototype.splitExt = function (filename) {
     return filename.split(/\.(?=[^.]+$)/);
 };
 
+DsairSoundView.prototype.makeButton = function (buttonIcon, buttonColor, buttonLabel, buttonId) {
+    var filelink = '<button onclick=fileItemSelect(' + buttonId.toString() + ')';
+    if (buttonColor != null) {
+        filelink += ' style="color:' + buttonColor + ';"';
+    }
+    filelink += '>';
+    filelink += '<img src="' + buttonIcon + '" width=24 style="margin-right:0.2em;">';
+    filelink += buttonLabel + '</button> <br>';
+    return filelink;
+};
+
 // Show file list
 DsairSoundView.prototype.showFileList = function (path, filelist) {
     // Clear box.
     $('#soundlist').html('');
     // Output a link to the parent directory if it is not the root directory.
     if (path != '/') {
-        $('#soundlist').append('<button onclick=chageDirectory(' +
-            (-1).toString() + ')> <label>' +
-            '../' + '</label> </button><br>');
+        $('#soundlist').append(this.makeButton(this.dirIcon, 'blue', '..', DsairSoundControl.isUpDir));
     }
     var len = filelist.length;
     for (var i = 0; i < len; i++) {
@@ -50,19 +64,18 @@ DsairSoundView.prototype.showFileList = function (path, filelist) {
         var filelink;
         // directory
         if ((file.attr & 0x10) != 0) {
-                filelink = '<button onclick=chageDirectory(' + i.toString() + ')> <label>' + file.fname + '/' + '</label> </button><br>';
+            filelink = this.makeButton(this.dirIcon, 'blue', file.fname, i);
         } else {
             // regular file
             var aExt = this.splitExt(file.fname.toLowerCase());
             if (aExt.length <= 1) {
                 continue;
             } 
-            if (aExt[1] != 'mp3') {
+            if (!(aExt[1] in this.extList)) {
                 continue;
             }
-            var caption = file.fname;
             // Make a link to a file.
-            filelink = '<button onclick=playSound(' + i.toString() + ')> <label>' + caption + '</label> </button><br>';
+            filelink = this.makeButton(this.extList[aExt[1]].icon, null, file.fname, i);
         }
         // Append a file entry or directory to the end of the list.
         $('#soundlist').append(filelink);

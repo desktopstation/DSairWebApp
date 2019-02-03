@@ -6,7 +6,7 @@ var FlashairUtilMock = function () {
 	this.super = FlashairUtil.prototype;
 	this._sharedMemory = this._initVal.repeat(512);
 	this._isPowerOn = false;
-	this._statusInfo = [ 'N', 1, 9, 0, 0, 0, 0, 0];
+	this._statusInfo = [ 'N', 1, 1,, 0, 0, 0, 0, 0];
 	this._replyMessage = [0, 0, 0];
 	this._locList = [];
 	this._locListSeq = 0;
@@ -294,24 +294,33 @@ FlashairUtilMock.prototype._jsonData = `
 
 FlashairUtilMock.prototype._fileListRoot = `WLANSD_FILELIST
 ,DCIM,0,16,19011,0
+,SD_WLAN,0,18,19011,0
 ,hiddenFile,0,16,19011,0
-,otherExt,0,16,19011,0
 ,vorbeifahrender Zug lang01.mp3,1016164,32,19846,14501
-,BaustelleSignalhorn.mp3,116667,32,19846,14500
-,Bhf - Pfiff65.mp3,24285,32,19846,14500
-,Dampflock klein Abfahrt.mp3,495341,32,19846,14500
-,Horn Diesellok.mp3,46837,32,19846,14500
-,Pfeife gr_Dampflok.mp3,38060,32,19846,14500
-,Pfeife mittlere_Dampflok.mp3,45583,32,19846,14500
-,Pfiff E-Lok kurz.mp3,20506,32,19846,14500
-,Pfiff E-Lok kurz2.mp3,20506,32,19846,14500
-,Pfiff E-Lok.mp3,35134,32,19846,14500
-,Typhon.mp3,61884,32,19846,14500
+,otherExt,0,16,19011,0
+,sample1.pdf,1016164,32,19846,14501
 `;
 
-FlashairUtilMock.prototype._fileListDCIM =  `WLANSD_FILELIST
+FlashairUtilMock.prototype._fileListDCIM = `WLANSD_FILELIST
 /DCIM,100__TSB,0,16,9944,129
 /DCIM,0126_1.jpg,70408,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListSD_WLAN = `WLANSD_FILELIST
+/SD_WLAN,List.htm,23792,32,20021,14870
+/SD_WLAN,c,0,16,20021,14871
+/SD_WLAN,css,0,16,20021,14871
+/SD_WLAN,cvdata,0,16,20021,14871
+/SD_WLAN,img,0,16,20021,14871
+/SD_WLAN,js,0,16,20021,14872
+`;
+
+FlashairUtilMock.prototype._fileListcvdata = `WLANSD_FILELIST
+/SD_WLAN/cvdata,default.json,38481,32,20021,14871
+/SD_WLAN/cvdata,DS_DSservo.json,37053,32,20021,14871
+/SD_WLAN/cvdata,ESU_LokSoundV4.json,39178,32,20021,14871
+/SD_WLAN/cvdata,Nagoden_MP3DecV5.json,38391,32,20021,14871
+/SD_WLAN/cvdata,Nucky_OneCoin4.json,38540,32,20021,14871
 `;
 
 FlashairUtilMock.prototype._fileListDCIM_TSB =  `WLANSD_FILELIST
@@ -330,6 +339,7 @@ FlashairUtilMock.prototype._fileListOtherExt = `WLANSD_FILELIST
 /otherExt,.dot.dot,2048,32,17071,28040
 /otherExt,wavefile.wav,2048,32,17071,28040
 /otherExt,textfile.txt,2048,32,17071,28040
+/otherExt,pdffile.pdf,2048,32,17071,28040
 `;
 
 FlashairUtilMock.prototype._fileListMP3Ext = `WLANSD_FILELIST
@@ -337,14 +347,20 @@ FlashairUtilMock.prototype._fileListMP3Ext = `WLANSD_FILELIST
 /MP3Ext,mp3file2.mP3,2048,32,17071,28040
 /MP3Ext,mp3file3.Mp3,2048,32,17071,28040
 /MP3Ext,mp3file4.MP3,2048,32,17071,28040
+/MP3Ext,.mp3file5.MP3,2048,32,17071,28040
+`;
+
+FlashairUtilMock.prototype._fileListEmpty = `WLANSD_FILELIST
 `;
 
 FlashairUtilMock.prototype._fileList = {
 	'/': FlashairUtilMock.prototype._fileListRoot,
 	'/DCIM': FlashairUtilMock.prototype._fileListDCIM,
 	'/DCIM/100__TSB': FlashairUtilMock.prototype._fileListDCIM_TSB,
+	'/SD_WLAN': FlashairUtilMock.prototype._fileListSD_WLAN,
+	'/SD_WLAN/cvdata': FlashairUtilMock.prototype._fileListcvdata,
 	'/hiddenFile': FlashairUtilMock.prototype._fileListHiddenFile,
-	'/otherExt': FlashairUtilMock.prototype._fileListOtherext,
+	'/otherExt': FlashairUtilMock.prototype._fileListOtherExt,
 	'/MP3Ext': FlashairUtilMock.prototype._fileListMP3Ext
 };
 
@@ -359,6 +375,10 @@ FlashairUtilMock.prototype.getFileList = function (args) {
 	for (let arg of argList) {
 		let param = arg.split('=');
 		if (param[0] == 'DIR') {
+			if (param[1].substr(0, 2) == './') {
+				param[1] = '/SD_WLAN' + param[1].substr(1);
+			}
+			console.log(param[1]);
 			if (param[1] in this._fileList) {
 				fileList = this._fileList[param[1]];
 			} else {
@@ -369,7 +389,7 @@ FlashairUtilMock.prototype.getFileList = function (args) {
 		}
 	}
 	if (fileList == null) {
-		fileList = this._fileList['/'];
+		fileList = this._fileListEmpty;
 	}
 	return fileList;
 };
@@ -672,7 +692,7 @@ FlashairUtilMock.prototype.updateShm = function () {
 };
 
 FlashairUtilMock.prototype.getJson= function (filename, callbackObj, callbackMethod) {
-	this.super.getJson.call(this, filename, callbackObj, callbackMethod);
+	//this.super.getJson.call(this, filename, callbackObj, callbackMethod);
 	let jsonObj = JSON.parse(this._jsonData);
 	setTimeout(function () {
 		callbackObj[callbackMethod](jsonObj);

@@ -235,16 +235,12 @@ var onSelectProtocol = function () {
 
 //
 
-var playSound = function (n) {
-    dsairApp.soundController.playSound(n);
+var fileItemSelect = function (n) {
+    dsairApp.soundController.fileItemSelect(n);
 };
 
 var stopSound = function () {
     dsairApp.soundController.stopSound();
-};
-
-var chageDirectory = function (n) {
-    dsairApp.soundController.chageDirectory(n);
 };
 
 //

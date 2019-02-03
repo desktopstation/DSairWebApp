@@ -1,7 +1,7 @@
 /**
- * ユーザ設定ファイル
+ * User settings
  */
-// 最高スピード設定のカスタマイズ
+// customize max speed
 dsairApp.configView._sliderProp.value = 18; // 4
 dsairApp.configView._sliderProp.min = 6;    // 2
 dsairApp.configView._sliderProp.max = 18;   // 6

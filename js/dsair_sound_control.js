@@ -4,16 +4,7 @@ var DsairSoundControl = function () {
     this._view = null;
 
     this._audioElem = null;
-    //var path = location.pathname;
-    //console.log(path);
-    //var index = path.lastIndexOf('/');
-    //if (index >= 0) {
-    //    this._currentPath = path.substr(0, index);
-    //} else {
-    //    console.info('invalid pathname "%s"', path);
-    //    this._currentPath = '/';
-    //}
-     this._currentPath = '/';
+    this._currentPath = '/';
     //console.log(this._currentPath);
     this._nextPath = '';
 
@@ -22,6 +13,8 @@ var DsairSoundControl = function () {
 
     window.addEventListener('load', this);
 };
+
+DsairSoundControl.isUpDir = -1;
 
 DsairSoundControl.prototype._soundRootDir = '';
 
@@ -49,10 +42,10 @@ DsairSoundControl.prototype.addView = function (inView) {
 };
 
 DsairSoundControl.prototype.isV1 = function () {
-    if ( this._wlansd.length == undefined || this._wlansd.length == 0 ) {
+    if (this._wlansd.length == undefined || this._wlansd.length == 0) {
         // List is empty so the card version is not detectable. Assumes as V2.
         return false;
-    } else if ( this._wlansd[0].length != undefined ) {
+    } else if (this._wlansd[0].length != undefined) {
         // Each row in the list is array. V1.
         return true;
     } else {
@@ -63,25 +56,30 @@ DsairSoundControl.prototype.isV1 = function () {
 
 // Convert data format from V1 to V2.
 DsairSoundControl.prototype.convertFileList = function () {
-    for (var i = 0; i < this._wlansd.length; i++) {
+    var l = this._wlansd.length;
+    for (var i = 0; i < l; i++) {
         var elements = this._wlansd[i].split(',');
         this._wlansd[i] = new Array();
         this._wlansd[i].r_uri = elements[0];
         this._wlansd[i].fname = elements[1];
         this._wlansd[i].fsize = parseInt(elements[2]);
-        this._wlansd[i].attr  = parseInt(elements[3]);
+        this._wlansd[i].attr = parseInt(elements[3]);
         this._wlansd[i].fdate = parseInt(elements[4]);
         this._wlansd[i].ftime = parseInt(elements[5]);
     }
 };
 
 // Callback Function for sort()
-DsairSoundControl.prototype.cmptime = function (a, b) {
-    if (a.fdate == b.fdate) {
-        return a.ftime - b.ftime;
-    } else {
-        return a.fdate - b.fdate;
+DsairSoundControl.prototype.cmpname = function (a, b) {
+    var alc = a.fname.toLowerCase();
+    var blc = b.fname.toLowerCase();
+    //console.log(alc, blc, alc > blc);
+    if (alc > blc) {
+        return 1;
+    } else if (alc < blc) {
+        return -1;
     }
+    return 0;
 };
 
 // Making Path
@@ -126,23 +124,43 @@ DsairSoundControl.prototype.getFileListCallback = function (data) {
     // Convert to V2 format.
     this.convertFileList();
     // Sort by name.
-    this._wlansd.sort();
+    var self = this;
+    this._wlansd.sort(function (a, b) { return self.cmpname(a, b); });
     // Show
     this._view.showFileList(this._currentPath, this._wlansd);
 };
 
-DsairSoundControl.prototype.playSound = function (n) {
-    console.log('play', n);
-    
-    if( this._currentPath == "/")
-    {
-    	this._audioElem.src = this._wlansd[n].fname;
+DsairSoundControl.prototype.splitExt = function (filename) {
+    return filename.split(/\.(?=[^.]+$)/);
+};
+
+DsairSoundControl.prototype.fileItemSelect = function (n) {
+    var filename;
+    if ((n == DsairSoundControl.isUpDir) || ((this._wlansd[n].attr & 0x10) != 0)) {
+        this.chageDirectory(n);
+        return;
     }
-    else
-    {
-    	this._audioElem.src = this._currentPath + '/' + this._wlansd[n].fname;
+    var aExt = this.splitExt(this._wlansd[n].fname.toLowerCase());
+    if (this._currentPath == '/') {
+        filename = this._wlansd[n].fname;
+    } else {
+        filename = this._currentPath + '/' + this._wlansd[n].fname;
     }
-    
+    switch (aExt[1]) {
+        case 'mp3':
+            this.playSound(filename);
+            break;
+        case 'pdf':
+            this.openPDF(filename);
+            break;
+        default:
+            break;
+    }
+};
+
+DsairSoundControl.prototype.playSound = function (filename) {
+    console.log('play', filename);
+
     //console.log('play %d %s', n, this._wlansd[n].fname);
     try {
         this._audioElem.play();
@@ -158,10 +176,18 @@ DsairSoundControl.prototype.stopSound = function () {
 
 DsairSoundControl.prototype.chageDirectory = function (n) {
     var newDir;
-    if (n == -1) {
+    if (n == DsairSoundControl.isUpDir) {
         newDir = '..';
     } else {
         newDir = this._wlansd[n].fname;
     }
     this.getFileList(newDir);
+};
+
+DsairSoundControl.prototype.openPDF = function (pdffile) {
+    try {
+        window.open(pdffile);
+    } catch (e) {
+        console.log(e);
+    }
 };

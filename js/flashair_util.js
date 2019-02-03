@@ -1,6 +1,5 @@
 // Flashair interfaces
 var FlashairUtil = function () {
-	this._getJsonArgs = null;
 	this._uploadArgs = null;
 	this._mkdirArgs = null;
 	this._writable = false;
@@ -95,31 +94,12 @@ FlashairUtil.prototype.sendCommand = function (arg) {
 };
 
 FlashairUtil.prototype.getJson = function (filename, callbackObject, callbackMethod) {
-	var documentURL = location.pathname;
-	var index = documentURL.lastIndexOf('/');
-	var dirname = documentURL.substr(0, index + 1);
-	console.log(documentURL, filename);
-	var jsonURL;
-	if (DsairConst.documentRootDir == '.') {
-		jsonURL = dirname + filename;
-	} else {
-		if (DsairConst.documentRootDir.substr(0,1) == '/') {
-			jsonURL = DsairConst.documentRootDir + '/' + filename;
-		} else {
-			jsonURL = dirname + DsairConst.documentRootDir + '/' + filename;
-		}
-	}
+	var jsonURL = filename;
 	console.log(jsonURL);
-	if (this._getJsonArgs  != null) {
-		callbackObject[callbackMethod](null, 'busy');
-		return;
-	}
-	this._getJsonArgs = {
-		url: jsonURL,
+	var getJsonArgs = {
 		callbackObject: callbackObject,
 		callbackMethod: callbackMethod
-	}
-	var self = this;
+	};
 	this.httpRequest(this._httpMethodGet, jsonURL,
 		function (data) {
 			var parsedObj = null;
@@ -127,17 +107,15 @@ FlashairUtil.prototype.getJson = function (filename, callbackObject, callbackMet
 				parsedObj = JSON.parse(data);
 			} catch (e) {
 				console.info(e);
-				console.info('request = "%s"', self.url);
+				console.info('request = "%s"', jsonURL);
 				console.info(data);
 			}
-			self._getJsonArgs.callbackObject[self._getJsonArgs.callbackMethod](parsedObj,'success');
-			self._getJsonArgs = null;
+			getJsonArgs.callbackObject[getJsonArgs.callbackMethod](parsedObj);
 		},
 		function (status) {
 			console.info(status);
 			console.info('request = "%s"', jsonURL);
-			self._getJsonArgs.callbackObject[self._getJsonArgs.callbackMethod](null, 'http error');
-			self._getJsonArgs = null;
+			getJsonArgs.callbackObject[getJsonArgs.callbackMethod](null);
 		}
 	);
 };

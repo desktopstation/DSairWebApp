@@ -20,6 +20,6 @@ var DsairConst = {
     protocolMM2: 'MM2',
     protocolDCC: 'DCC',
     maxAccessories: 2044,
-    documentRootDir: DsairDebug ? '.' : 'SD_WLAN'
+    documentRootDir: DsairDebug ? '.' : '/SD_WLAN'
 };
 

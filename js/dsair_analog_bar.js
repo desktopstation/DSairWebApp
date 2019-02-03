@@ -1,3 +1,4 @@
+//
 var DsairAnalogBar = function (inCanvasName) {
     DsairMeterBase.call(this, inCanvasName);
     this.super = DsairMeterBase.prototype;
@@ -14,9 +15,6 @@ inherits(DsairAnalogBar, DsairMeterBase);
 DsairAnalogBar.prototype.imageFilename = DsairConst.documentRootDir + '/img/speedobar_mask.png';
 
 DsairAnalogBar.prototype.onLoad = function () {
-    if (this._loaded) {
-        //return;
-    }
     this._loaded = true;
     this._canvas = document.getElementById(this._canvasName);
     this._ctx = this._canvas.getContext('2d');

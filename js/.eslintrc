@@ -56,7 +56,7 @@
         "DsairSpeedControl": false,
         "DsairMeterBase": false,
         "DsairCircularMeter": false,
-        "FlashairFileSelection": false,
+        "DsairFileControl": false,
         "DsairFileSelectionDialog": false,
         "dsairApp":true
     }
