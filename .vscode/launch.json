@@ -11,7 +11,7 @@
         "name": "Launch remote website with sourcemaps",
         "type": "chrome",
         "request": "launch",
-        "url": "http://flashair/",
+        "url": "http://192.168.1.6/",
         "webRoot": "${workspaceRoot}/",
         "sourceMaps": true
       }
