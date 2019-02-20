@@ -7,8 +7,6 @@ var DsairCommand = function() {
 
 	this._getStatusCbList = [];
 	this._getMasterCodeCbList = [];
-	this._getSSIDCbList = [];
-    this._getAppNetworkKeyCbList = [];
     this._input = null;
     this._downloadLink = null;
     this._uploadFilename = '';
@@ -32,78 +30,51 @@ DsairCommand.prototype.onLoad = function () {
     this._downloadLink = document.createElement('a');
 };
 
-
 DsairCommand.prototype.addUtil = function (inUtil) {
 	this._flashairUtil = inUtil;
 };
 
-DsairCommand.prototype.addStatusCallback = function (inCbObj) {
-	this._getStatusCbList.push(inCbObj);
-};
-
-DsairCommand.prototype.addMasterCodeCallback = function (inCbObj) {
-	this._getMasterCodeCbList.push(inCbObj);
-};
-
-DsairCommand.prototype.addSSIDCallback = function (inCbObj) {
-	this._getSSIDCbList.push(inCbObj);
-};
-DsairCommand.prototype.addNetworkKeyCallback = function (inCbObj) {
-	this._getAppNetworkKeyCbList.push(inCbObj);
-};
-
-//
-
-DsairCommand.prototype.getStatus = function () {
-	var self = this;
-	this._flashairUtil.readShmem(128, 264, function (data) {
-        self._SHRAM_Power = (data.substr(0,1) == 'Y') ? DsairConst.powerOn : DsairConst.powerOff;
-        for (var cbObj of self._getStatusCbList) {
-            if ('getStatusCallback' in cbObj) {
-                cbObj.getStatusCallback(data);
-            }
-        }
-	}, null);
+DsairCommand.prototype.getStatus = function (cbObj, method) {
+    var self = this;
+    this._flashairUtil.readShmem(128, 264, function (data) {
+        self._SHRAM_Power = (data.substr(0, 1) == 'Y') ? DsairConst.powerOn : DsairConst.powerOff;
+        cbObj[method](data);
+    }, null);
 };
 
 DsairCommand.prototype.getPowerStatus = function() {
 	return this._SHRAM_Power;
 };
 
-DsairCommand.prototype.getMasterCode = function () {
-    var self = this;
+DsairCommand.prototype.getMasterCode = function (cbObj, method) {
     this._flashairUtil.requestSimpleCommand(106, null, function (data) {
-        for (var cbObj of self._getMasterCodeCbList) {
-            if ('getMasterCodeCallback' in cbObj) {
-                cbObj.getMasterCodeCallback(data);
-            }
-        }
+        cbObj[method](data);
 	}, null);
 };
 
-DsairCommand.prototype.getSSID = function () {
-    var self = this;
+DsairCommand.prototype.getSSID = function (cbObj, method) {
     this._flashairUtil.requestSimpleCommand(104, null, function (data) {
-        for (var cbObj of self._getSSIDCbList) {
-            if ('getSSIDCallback' in cbObj) {
-                cbObj.getSSIDCallback(data);
-            }
-        }
+        cbObj[method](data);
 	}, null);
 };
 
-DsairCommand.prototype.getAppNetworoKey = function () {
-
-    var self = this;
+DsairCommand.prototype.getAppNetworoKey = function (cbObj, method) {
     this._flashairUtil.requestSimpleCommand(105, null, function (data) {
-        for (var cbObj of self._getAppNetworkKeyCbList) {
-            if ('getAppNetworkKeyCallback' in cbObj) {
-                cbObj.getAppNetworkKeyCallback(data);
-            }
-        }
+        cbObj[method](data);
 	}, null);
 };
 
+DsairCommand.prototype.getFirmwareVersion = function (cbObj, method) {
+    this._flashairUtil.requestSimpleCommand(108, null, function (data) {
+        cbObj[method](data);
+	}, null);
+};
+
+DsairCommand.prototype.getWLANMode = function (cbObj, method) {
+    this._flashairUtil.requestSimpleCommand(110, null, function (data) {
+        cbObj[method](data);
+	}, null);
+};
 DsairCommand.prototype.setParams = function (mastercode, appssid, appnetworkkey) {
     this._flashairUtil.setParams(mastercode, appssid, appnetworkkey);
 };
@@ -147,7 +118,7 @@ DsairCommand.prototype.setFunction = function (inLocAddr, inFuncNo, inOnOff) {
 };
 
 DsairCommand.prototype.setAccessory = function (inAccAddr, inOnOff) {
-    var arg = 'TO(' + inAccAddr + ',' + inOnOff + ')';
+    var arg = 'TO(' + inAccAddr + ',' + inOnOff + '9 {})';
     this._flashairUtil.sendCommand(arg);
 };
 
@@ -171,16 +142,33 @@ DsairCommand.prototype.setAnalogSpeed = function (inSpeed, inDir) {
     this._flashairUtil.sendCommand(arg);
 };
 
-DsairCommand.prototype.getFileList = function (inDirName, callbackObj, callbackMethod) {
+DsairCommand.prototype.getFileList = function (inDirName, callbackObj, callbackMethod, optarg) {
     var arg = 'DIR=' + inDirName;
     this._flashairUtil.requestSimpleCommand(100, arg,
         function (data) {
-            callbackObj[callbackMethod](data);
+            callbackObj[callbackMethod](data, optarg);
         }, null);
 };
 
 DsairCommand.prototype.getJson = function (filename, callbackObj, callbackMethod) {
-    this._flashairUtil.getJson(filename, callbackObj, callbackMethod);
+    var cbArg = {
+        cbObject: callbackObj,
+        method: callbackMethod,
+        filename: filename
+    };
+    this._flashairUtil.getFile(filename, this, 'getJsonCallback', cbArg);
+};
+
+DsairCommand.prototype.getJsonCallback = function (data, optarg) {
+    var parsedObj = null;
+    try {
+        parsedObj = JSON.parse(data);
+    } catch (e) {
+        console.info(e);
+        console.info('request = "%s"', optarg.filename);
+        console.info(data);
+    }
+    optarg.cbObject[optarg.method](parsedObj);
 };
 
 DsairCommand.prototype.download = function (filename, content) {

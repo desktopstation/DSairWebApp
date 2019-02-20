@@ -1,4 +1,5 @@
-// flashairfile access utilities
+// 
+// files on flashair access utilities
 var DsairFileControl = function (inCurrentPath) {
     this._command = null;
     this._controller = null;
@@ -7,7 +8,7 @@ var DsairFileControl = function (inCurrentPath) {
     this._currentPath = inCurrentPath;
     this._nextPath = '';
 
-    this._fileList = new Array();
+    this._fileList = [];
     window.addEventListener('load', this);
 };
 
@@ -25,15 +26,15 @@ DsairFileControl.prototype.handleEvent = function (e) {
 
 DsairFileControl.prototype.onLoad = function () {
     //console.log(this._currentPath);
-    this.getFileList('.');
+    this.getFileList();
 };
 
 DsairFileControl.prototype.addDsairCommand = function (inCommand) {
     this._command = inCommand;
 };
 
-DsairFileControl.prototype.addControl = function (inView, inMethodName) {
-    this._controller = inView;
+DsairFileControl.prototype.addControl = function (inControl, inMethodName) {
+    this._controller = inControl;
     this._fileListMethod = inMethodName;
 };
 
@@ -59,7 +60,7 @@ DsairFileControl.prototype.convertFileList = function () {
         this._fileList[i].r_uri = elements[0];
         this._fileList[i].fname = elements[1];
         this._fileList[i].fsize = parseInt(elements[2]);
-        this._fileList[i].attr = parseInt(elements[3]);
+        this._fileList[i].attr  = parseInt(elements[3]);
         this._fileList[i].fdate = parseInt(elements[4]);
         this._fileList[i].ftime = parseInt(elements[5]);
     }
@@ -94,19 +95,15 @@ DsairFileControl.prototype.makePath = function (dir) {
         arrPath.push('');
     }
     //console.log(arrPath);
-    return arrPath.join('/');
+    this._currentPath = arrPath.join('/');
 };
 
-DsairFileControl.prototype.getFileList = function (dir) {
-    // Make a path to show next.
-    this._nextPath = this.makePath(dir);
+DsairFileControl.prototype.getFileList = function () {
     // Make URL for CGI. (DIR must not end with '/' except if it is the root.)
-    this._command.getFileList(this._nextPath, this, 'getFileListCallback');
+    this._command.getFileList(this._currentPath, this, 'getFileListCallback');
 };
 
 DsairFileControl.prototype.getFileListCallback = function (data) {
-    // Save the current path.
-    this._currentPath = this._nextPath;
     // Split lines by new line characters.
     this._fileList = data.split(/\n/g);
     // Ignore the first line (title) and last line (blank).
@@ -122,12 +119,23 @@ DsairFileControl.prototype.getFileListCallback = function (data) {
 };
 
 DsairFileControl.prototype.chageDirectory = function (newDir) {
-    this.getFileList(newDir);
+    // Make a path to show next.
+    this.makePath(newDir);
+    this.getFileList();
 };
 
-DsairFileControl.prototype.getFileItem  = function (n) {
+DsairFileControl.prototype.chageDirectoryByIndex = function (n) {
+    var fileInfo = this.getFileInfo(n);
+    if (this.isDirectory(fileInfo)) {
+        this.chageDirectory(fileInfo.fname);
+    } else {
+        throw new Error('"' + fileInfo.fname + '" is not a directory');
+    }
+};
+
+DsairFileControl.prototype.getFileInfo = function (n) {
     if (n == DsairFileControl.isUpDir) {
-        return { fname: '..', attr: 0x10};
+        return { fname: '..', attr: 0x10 };
     }
     return this._fileList[n];
 };
@@ -136,6 +144,21 @@ DsairFileControl.prototype.getCurrentPath  = function () {
     return this._currentPath;
 };
 
-DsairFileControl.prototype.splitExt = function (filename) {
-    return filename.split(/\.(?=[^.]+$)/);
+DsairFileControl.prototype.getExt = function (filename) {
+    var idx = filename.lastIndexOf('.');
+    if (idx == -1) {
+        return '';
+    }
+    if (idx == 0) {
+        return '';
+    }
+    return filename.substr(idx + 1).toLowerCase();
+};
+
+DsairFileControl.prototype.isHidden = function (fileInfo) {
+    return ((fileInfo.attr & 0x02) != 0);
+};
+
+DsairFileControl.prototype.isDirectory = function (fileInfo) {
+    return ((fileInfo.attr & 0x10) != 0);
 };

@@ -101,44 +101,22 @@ DsairCabView.prototype.setLocAddr = function (inModeLocIndex) {
 };
 
 DsairCabView.prototype.getModeLocIndex = function () {
-    return parseInt($("[name=radio_adr]:checked").val());
+    return parseInt($('[name=radio_adr]:checked').val());
 }
+
+DsairCabView.prototype.UpdateFunctionButton = function (id, val) {
+    $('#check' + id.toString()).prop('checked',  val).change();
+};
 
 DsairCabView.prototype.UpdateFunctionButtonsAll = function () {
     if (!this._loaded) {
         return;
     }
     //ファンクションボタンを全て変更する
-
-    $('#check0').prop('checked',  (this._controller.getLocFuncStatus(0)  == 1)).change();
-    $('#check1').prop('checked',  (this._controller.getLocFuncStatus(1)  == 1)).change();
-    $('#check2').prop('checked',  (this._controller.getLocFuncStatus(2)  == 1)).change();
-    $('#check3').prop('checked',  (this._controller.getLocFuncStatus(3)  == 1)).change();
-    $('#check4').prop('checked',  (this._controller.getLocFuncStatus(4)  == 1)).change();
-    $('#check5').prop('checked',  (this._controller.getLocFuncStatus(5)  == 1)).change();
-    $('#check6').prop('checked',  (this._controller.getLocFuncStatus(6)  == 1)).change();
-    $('#check7').prop('checked',  (this._controller.getLocFuncStatus(7)  == 1)).change();
-    $('#check8').prop('checked',  (this._controller.getLocFuncStatus(8)  == 1)).change();
-    $('#check9').prop('checked',  (this._controller.getLocFuncStatus(9)  == 1)).change();
-    $('#check10').prop('checked', (this._controller.getLocFuncStatus(10) == 1)).change();
-    $('#check11').prop('checked', (this._controller.getLocFuncStatus(11) == 1)).change();
-    $('#check12').prop('checked', (this._controller.getLocFuncStatus(12) == 1)).change();
-    $('#check13').prop('checked', (this._controller.getLocFuncStatus(13) == 1)).change();
-    $('#check14').prop('checked', (this._controller.getLocFuncStatus(14) == 1)).change();
-    $('#check15').prop('checked', (this._controller.getLocFuncStatus(15) == 1)).change();
-    $('#check16').prop('checked', (this._controller.getLocFuncStatus(16) == 1)).change();
-    $('#check17').prop('checked', (this._controller.getLocFuncStatus(17) == 1)).change();
-    $('#check18').prop('checked', (this._controller.getLocFuncStatus(18) == 1)).change();
-    $('#check19').prop('checked', (this._controller.getLocFuncStatus(19) == 1)).change();
-    $('#check20').prop('checked', (this._controller.getLocFuncStatus(20) == 1)).change();
-    $('#check21').prop('checked', (this._controller.getLocFuncStatus(21) == 1)).change();
-    $('#check22').prop('checked', (this._controller.getLocFuncStatus(22) == 1)).change();
-    $('#check23').prop('checked', (this._controller.getLocFuncStatus(23) == 1)).change();
-    $('#check24').prop('checked', (this._controller.getLocFuncStatus(24) == 1)).change();
-    $('#check25').prop('checked', (this._controller.getLocFuncStatus(25) == 1)).change();
-    $('#check26').prop('checked', (this._controller.getLocFuncStatus(26) == 1)).change();
-    $('#check27').prop('checked', (this._controller.getLocFuncStatus(27) == 1)).change();
-    $('#check28').prop('checked', (this._controller.getLocFuncStatus(28) == 1)).change();
+    var i;
+    for (i = 0; i < 29; i++) {
+        this.UpdateFunctionButton(i, (this._controller.getLocFuncStatus(0)  == 1));
+    }
 
     $('#checkDirReverse').prop('checked', this._controller.getLocDir()).change();
 };

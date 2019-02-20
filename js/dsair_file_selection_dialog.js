@@ -5,10 +5,10 @@ var DsairFileSelectionDialog = function (inDialogName, inClassName, inOptArg) {
     this._filename = '';
     this._filenameArea = inOptArg.filenameArea;
     this._directoryArea = inOptArg.directoryArea;
-    this._listArea = inOptArg.filelistArea;
-    this._fileList = [];
+    this._listArea = inOptArg.fileListArea;
     this._buttonIdList = [];
-    this._fileSelection = new FlashairFileSelection(this, 'onSelectCallback', 'getFileListCallback');
+    this._fileControl = new DsairFileControl(this._initialDir);
+    this._fileControl.addControl(this, 'getFileListCallback');
     this._fileSelectionCallbackObject = null;
     this._fileSelectionCallbackMethod = '';
     window.addEventListener('load', this);
@@ -16,7 +16,7 @@ var DsairFileSelectionDialog = function (inDialogName, inClassName, inOptArg) {
 
 inherits(DsairFileSelectionDialog, DsairDialog);
 
-DsairFileSelectionDialog.prototype._initialDir = '';
+DsairFileSelectionDialog.prototype._initialDir = '/';
 
 DsairFileSelectionDialog.handleEvent = function (e) {
     this.super.handleEvent.call(this, e);
@@ -39,31 +39,29 @@ DsairFileSelectionDialog.onButtonClick = function (e) {
 };
 
 DsairFileSelectionDialog.prototype.addDsairCommand = function (inCommand) {
-    this._fileSelection.addDsairCommand(inCommand);
+    this._fileControl.addDsairCommand(inCommand);
 };
 
 DsairFileSelectionDialog.prototype.open = function(inCallbackObject, inCallbackMethodName) {
     this._fileSelectionCallbackObject = inCallbackObject;
     this._fileSelectionCallbackMethod = inCallbackMethodName;
-    this._fileSelection.init(this._initialDir);
+    this._fileControl.getFileList();
 };
-
-DsairFileSelectionDialog.prototype.splitExt = function (filename) {
-    return filename.split(/\.(?=[^.]+$)/);
-}
-
-DsairFileSelectionDialog.prototype.getFileListCallback = function (path, filelist) {
-    this._fileList = filelist;
+a
+DsairFileSelectionDialog.prototype.getFileListCallback = function (fileList) {
+    var currentPath = this._fileControl.getCurrentPath(); 
     this._buttonIdList = [];
     $(this._listArea).html = '';
-    $(this._directoryArea).val(path);
+    $(this._directoryArea).val(currentPath);
     $(this._filenameArea).val(this._filename);
-    var len = this._fileList.length;
+    var len = fileList.length;
     for (var i = 0; i < len; i++) {
-        var file = this._fileList[i];
-        this._buttonIdList[i] = null;
+        var file = fileList[i];
         // Skip hidden file.
-        if ((file.attr & 0x02) != 0) {
+        if (this._fileControl.isHidden(file)) {
+            continue;
+        }
+        if (this._fileControl.isDirectory(file)) {
             continue;
         }
         var buttonId;
@@ -90,9 +88,6 @@ DsairFileSelectionDialog.prototype.getFileListCallback = function (path, filelis
         }
         var buttonText = '<button id=' + buttonId + ' <label>' + caption + '</label> </button><br>'
         $(this._listArea).append(buttonText);
-        // var button = document.getElementById(buttonId);
-        // button.addEventListener('click', this);
-        // console.log(button);
     }
     $('p').css({
         'display': 'block'

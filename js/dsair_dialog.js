@@ -34,7 +34,16 @@ DsairDialog.prototype.open = function(inCallbackObject, inCallbackMethodName) {
     this._callbackObject = inCallbackObject;
     this._callbackMethodName = inCallbackMethodName;
     $(this._dialogName).dialog('open');
+    var self = this;
+    $(this._dialogName).on('keydown', function (e)  {
+        self.onKeyDown(e);
+        e.stopPropagation();
+    });
 }
+
+DsairDialog.prototype.onKeyDown = function (e) {
+    e.preventDefault();
+};
 
 DsairDialog.prototype.close = function (inVal) {
     if (this._callbackObject != null) {

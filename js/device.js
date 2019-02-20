@@ -1,17 +1,18 @@
 var Device = function () {
-	this._NoVibration = 0;
+	this._noVibration = 0;
 };
 
+Device.prototype._noVibration = 0;
+
 Device.prototype.Vibrate = function () {
-	if (this._NoVibration == 1) {
+	if (this._noVibration == 1) {
 		return;
 	}
 
 	setTimeout(function () {
 		if (window.navigator.vibrate) {
 			window.navigator.vibrate(25);
-		}
-		else if (window.navigator.webkitVibrate) {
+		} else if (window.navigator.webkitVibrate) {
 			window.navigator.webkitVibrate(25);
 		}
 	}, 0);

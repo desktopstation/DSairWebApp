@@ -1,3 +1,4 @@
+//
 var DsairCVControl = function () {
     this._command = null;
     this._view = null;
@@ -26,8 +27,8 @@ DsairCVControl.prototype.handleEvent = function (e) {
 DsairCVControl.prototype.onLoad = function () {
     this._view.setCVNo(this._CVNo);
     this._view.setCVValue(this._CVVal);
-    this.RegisterCVList();
-    this.ChangeCVDescription();
+    this.registerCVList();
+    this.changeCVDescription();
     this.getCVFileList();
 };
 
@@ -77,7 +78,7 @@ DsairCVControl.prototype.onClickCVRead = function () {
     }
 };
 
-DsairCVControl.prototype.OpenCVValEdit = function () {
+DsairCVControl.prototype.openCVValEdit = function () {
     this._cvEditDialog.open(this._CVVal, this, 'cvEditCallback', null);
 };
 
@@ -113,9 +114,9 @@ DsairCVControl.prototype.onDistStateNotify = function(cbArg) {
     this._view.setReadCVValue(cbArg.cvValue);
 };
 
-DsairCVControl.prototype.ChangeCVDescription = function () {
+DsairCVControl.prototype.changeCVDescription = function () {
     this._CVNo = this._view.getCVNo();
-    //console.log('ChangeCVDescription', this._CVNo);
+    //console.log('changeCVDescription', this._CVNo);
     var description = '';
     switch (this._CVNo) {
         case 1:
@@ -135,48 +136,52 @@ DsairCVControl.prototype.ChangeCVDescription = function () {
     this._view.setDescription(description);
 };
 
-
-DsairCVControl.prototype.RegisterCVList = function () {
-    this._command.getJson(this.cvdataDefault, this, 'ReadCVListCallback');
+DsairCVControl.prototype.registerCVList = function () {
+    this._command.getJson(this.cvdataDefault, this, 'readCVListCallback');
 };
 
-DsairCVControl.prototype.ReadCVListCallback = function (jsonObj) {
+DsairCVControl.prototype.readCVListCallback = function (jsonObj) {
     var i;
     if (jsonObj != null) {
         var len = jsonObj.cvdata.length;
 
         for (i = 0; i < len; i++) {
-            this._view.appendCVList('<option value=' + jsonObj.cvdata[i].cvnum + '>' +
-            jsonObj.cvdata[i].cvname + '</option>');
+            this._view.appendCVList('<option value=' + jsonObj.cvdata[i].cvnum + '>'
+                + jsonObj.cvdata[i].cvname + '</option>');
         }
     } else {
         for (i = 1; i <= 1024; i++) {
-            this._view.appendCVList('<option value=' + i.toString() + '>CV' + i.toString() + '     </option>');
+            this._view.appendCVList('<option value=' + i.toString() + '>CV'
+                + i.toString() + '     </option>');
         }
     }
 };
 
 DsairCVControl.prototype.getCVFileList = function () {
-    this._fileControl.getFileList('.');
+    this._fileControl.getFileList();
 };
 
 DsairCVControl.prototype.getCVFileListCallback = function (fileList) {
     this._view.clearCVFileList();
-    var l = fileList.length;
+    var len = fileList.length;
     var i;
-    for (i = 0; i < l; i++) {
-        if ((fileList[i].attr & 0x10) != 0) {
+    for (i = 0; i < len; i++) {
+        var file = fileList[i];
+        if (this._fileControl.isHidden(file)) {
             continue;
         }
-        var aExt = this._fileControl.splitExt(fileList[i].fname.toLowerCase());
-        if (aExt[1] == 'json') {
-            this._view.addCVFileList(fileList[i].fname, i);
+        if (this._fileControl.isDirectory(file)) {
+            continue;
+        }
+        var aExt = this._fileControl.getExt(file.fname);
+        if (aExt == 'json') {
+            this._view.addCVFileList(file.fname, i);
         }
     }
 };
 
-DsairCVControl.prototype.changeCVFileList = function (val) {
-    var fileInfo = this._fileControl.getFileItem(val);
+DsairCVControl.prototype.changeCVFileList = function (n) {
+    var fileInfo = this._fileControl.getFileInfo(n);
     var currentPath = this._fileControl.getCurrentPath();
     var filename;
     if (currentPath == '/') {

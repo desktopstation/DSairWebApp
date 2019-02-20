@@ -24,6 +24,7 @@ FlashairUtilMock.prototype._masterCode = '9876543210';
 FlashairUtilMock.prototype._appSSID = 'Flashair';
 FlashairUtilMock.prototype._appNetworkKey = '12345678';
 FlashairUtilMock.prototype._flashairFirmwareVersion = 'F15DBW3BW4.00.03';
+FlashairUtilMock.prototype._flashairWLANMode = '4';
 FlashairUtilMock.prototype._responseTime = 50;// ms
 FlashairUtilMock.prototype._responseLength = 264;
 FlashairUtilMock.prototype._maxLocNo = 8;
@@ -414,6 +415,9 @@ FlashairUtilMock.prototype.requestSimpleCommand = function (op, option, respCb, 
 		case 108:	// Firmware version
 			respStr = this._flashairFirmwareVersion;
 			break;
+		case 110:	// WLAN mode
+			respStr = this._flashairWLANMode;
+			break;
 		default:
 			respStr = '???';
 			console.info('Unknown requset %d', op);
@@ -691,11 +695,19 @@ FlashairUtilMock.prototype.updateShm = function () {
 	this._sharedMemory = this._sharedMemory.substr(0, 128) + aResponse;
 };
 
-FlashairUtilMock.prototype.getJson= function (filename, callbackObj, callbackMethod) {
-	//this.super.getJson.call(this, filename, callbackObj, callbackMethod);
-	let jsonObj = JSON.parse(this._jsonData);
+FlashairUtilMock.prototype.getFile = function (filename, callbackObj, callbackMethod, optarg) {
+	//this.super.getFile.call(this, filename, callbackObj, callbackMethod);
+	var fileData = null;
+	var basename = filename.split('/').pop();
+	switch (basename) {
+		case 'default.json':
+			fileData = this._jsonData;
+			break;
+		default:
+			break;
+	}
 	setTimeout(function () {
-		callbackObj[callbackMethod](jsonObj);
+		callbackObj[callbackMethod](fileData, optarg);
 	}, this._responseTime);
 };
 

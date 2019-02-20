@@ -76,6 +76,8 @@ DsairCabControl.prototype._name = 'DCC controller';
 
 DsairCabControl.prototype.handleEvent = function (e) {
     switch (e.type) {
+        case 'DOMContentLoaded':
+            break;
         case 'load':
             this.onLoad();
             break;
@@ -85,6 +87,8 @@ DsairCabControl.prototype.handleEvent = function (e) {
 };
 
 DsairCabControl.prototype.onLoad = function () {
+    // 初期状態を取得
+    this._dsairCommand.getStatus(this, 'getStatusCallback');
     this.startPeriodicProcess();
 };
 
@@ -101,9 +105,6 @@ DsairCabControl.prototype.addStorege = function (inStorege) {
 
 DsairCabControl.prototype.addDsairCommand = function (inCommand) {
     this._dsairCommand = inCommand;
-    this._dsairCommand.addStatusCallback(this);
-    // 初期状態を取得
-    this._dsairCommand.getStatus();
 };
 
 // 速度表示オブジェクトを追加
@@ -389,7 +390,7 @@ DsairCabControl.prototype.startPeriodicProcess = function () {
     var self = this;
     setInterval(function () {
         // 定周期状態確認
-        self._dsairCommand.getStatus();
+        self._dsairCommand.getStatus(self, 'getStatusCallback');
     }, this._statusInterval);
 };
 
@@ -486,7 +487,7 @@ DsairCabControl.prototype.getStatusCallback = function (inData) {
 
     // アクセサリ配信データ取得
     
-    this._accManager.getStatusCallback(aReplyStrArray[2], this._statusFirmVer);
+    this._accManager.getStatusCallback(aReplyStrArray[2]);
  
     // 機関車の配信データ取得
 

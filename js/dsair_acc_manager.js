@@ -1,3 +1,5 @@
+//
+//
 var DsairAccManager = function () {
     var i;
     this._command = null;
@@ -95,22 +97,17 @@ DsairAccManager.prototype.onDataLoad = function () {
     this._configControl.setAccProtocol(aAccProtocol);
 };
 
-DsairAccManager.prototype.getStatusCallback = function (inData, inFirmVer) {
-    var l = Math.floor(inData.length / 2);
+DsairAccManager.prototype.getStatusCallback = function (inData) {
+    var l = inData.length;
     var accStatus = [];
     var i;
     var j;
 
     for (i = 0; i < l; i++) {
-        var byte;
-        if (inFirmVer == '0') {
-            var revstr = inData.substr(i * 2 + 1, 1) + inData.substr(i * 2, 1);
-            byte = parseInt(revstr, 16);
-        } else {
-            byte = parseInt(inData.substr(i * 2, 2), 16);
-        }
-        for (j = 0; j < 8; j++) {
-            accStatus[i * 8 + j] = ((byte & (1 << j)) != 0) ? DsairAccManager.accOn : DsairAccManager.accOff;
+        var  nibble;
+        nibble = parseInt(inData.substr(i, 1), 16);
+        for (j = 0; j < 4; j++) {
+            accStatus[i * 4 + j] = ((nibble & (1 << j)) != 0) ? DsairAccManager.accOn : DsairAccManager.accOff;
         }
     }
     if (!this._accStatusLoaded) {
@@ -130,5 +127,4 @@ DsairAccManager.prototype.getStatusCallback = function (inData, inFirmVer) {
             }
         }
     }
-    this._accDistStatus = accStatus;
 };

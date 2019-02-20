@@ -1,28 +1,26 @@
 // Flashair interfaces
 var FlashairUtil = function () {
-	this._uploadArgs = null;
-	this._mkdirArgs = null;
 	this._writable = false;
 };
 
 //
 
-FlashairUtil.prototype._httpMethodGet = 'GET';
-FlashairUtil.prototype._httpMethodPost = 'POST';
-FlashairUtil.prototype._commandBase = '/command.cgi';
-FlashairUtil.prototype._commandOp = '?op='
-FlashairUtil.prototype._commandAddr = '&ADDR=';
-FlashairUtil.prototype._commandLen = '&LEN=';
-FlashairUtil.prototype._commandData = '&DATA=';
-FlashairUtil.prototype._configBase = '/configure.cgi';
-FlashairUtil.prototype._configMasterCode = '?MASTERCODE=';
-FlashairUtil.prototype._configUrlAppSSID = '&APPSSID=';
-FlashairUtil.prototype._configNetworkKey = '&APPNETWORKKEY=';
-FlashairUtil.prototype._configUrlTIMEZONE = '&TIMEZONE=';
-FlashairUtil.prototype._uploadBase = '/upload.cgi';
-FlashairUtil.prototype._uploadDir = '?UPDIR=';
-FlashairUtil.prototype._uploadSystemTime = '?FTIME=';
-FlashairUtil.prototype._uploadWriteProtect = '?WRITEPROTECT=';
+FlashairUtil._httpMethodGet = 'GET';
+FlashairUtil._httpMethodPost = 'POST';
+FlashairUtil._commandBase = '/command.cgi';
+FlashairUtil._commandOp = '?op='
+FlashairUtil._commandAddr = '&ADDR=';
+FlashairUtil._commandLen = '&LEN=';
+FlashairUtil._commandData = '&DATA=';
+FlashairUtil._configBase = '/configure.cgi';
+FlashairUtil._configMasterCode = '?MASTERCODE=';
+FlashairUtil._configUrlAppSSID = '&APPSSID=';
+FlashairUtil._configNetworkKey = '&APPNETWORKKEY=';
+FlashairUtil._configUrlTIMEZONE = '&TIMEZONE=';
+FlashairUtil._uploadBase = '/upload.cgi';
+FlashairUtil._uploadDir = '?UPDIR=';
+FlashairUtil._uploadSystemTime = '?FTIME=';
+FlashairUtil._uploadWriteProtect = '?WRITEPROTECT=';
 FlashairUtil.prototype._timeZone = 36;
 
 //
@@ -54,38 +52,39 @@ FlashairUtil.prototype.httpRequest = function (httpMethod, url, respCb, errCb, c
 };
 
 FlashairUtil.prototype.requestCommand = function (op, arg, respCb, errCb) {
-	var url = this._commandBase + this._commandOp + op.toString() + arg;
-	this.httpRequest(this._httpMethodGet, url, respCb, errCb, null);
+	var url = FlashairUtil._commandBase + FlashairUtil._commandOp + op.toString() + arg;
+	this.httpRequest(FlashairUtil._httpMethodGet, url, respCb, errCb, null);
 };
 
 FlashairUtil.prototype.requestSimpleCommand = function (op, optarg, respCb, errCb) {
-	var url = this._commandBase + this._commandOp + op.toString();
+	var url = FlashairUtil._commandBase + FlashairUtil._commandOp + op.toString();
 	if (optarg != null) {
 		url += '&' + optarg;
 	}
-	this.httpRequest(this._httpMethodGet, url, respCb, errCb, null);
+	this.httpRequest(FlashairUtil._httpMethodGet, url, respCb, errCb, null);
 };
 
 FlashairUtil.prototype.requestConfig = function(mastercode, args) {
-	var url = this._configBase + this._configMasterCode + mastercode + args
-	this.httpRequest(this._httpMethodGet, url,
+	var url = FlashairUtil._configBase + FlashairUtil._configMasterCode + mastercode + args
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
 		null, null, null);
 };
 
 FlashairUtil.prototype.setParams = function (mastercode, appssid, appnetworkkey) {
-	var arg = this._configUrlAppSSID + appssid +
-	this._configNetworkKey + appnetworkkey +
-	this._configUrlTIMEZONE + this._timeZone.toString();
+	var arg = FlashairUtil._configUrlAppSSID + appssid +
+	FlashairUtil._configNetworkKey + appnetworkkey +
+	FlashairUtil._configUrlTIMEZONE + this._timeZone.toString();
 	this.requestConfig(mastercode, arg);
 };
 
 FlashairUtil.prototype.readShmem = function (start, length, respCb, errCb) {
-	var arg = this._commandAddr + start.toString() + this._commandLen + length.toString();
+	var arg = FlashairUtil._commandAddr + start.toString() + FlashairUtil._commandLen + length.toString();
 	this.requestCommand(130, arg, respCb, errCb);
 };
 
 FlashairUtil.prototype.writeShmem = function (start, length, data, respCb, errcb) {
-	var arg = this._commandAddr + start.toString() + this._commandLen + length.toString() + this._commandData + data;
+	var arg = FlashairUtil._commandAddr + start.toString()
+		+ FlashairUtil._commandLen + length.toString() + FlashairUtil._commandData + data;
 	this.requestCommand(131, arg, respCb, errcb);
 };
 
@@ -93,39 +92,24 @@ FlashairUtil.prototype.sendCommand = function (arg) {
 	this.writeShmem(0, 64, arg, null, null);
 };
 
-FlashairUtil.prototype.getJson = function (filename, callbackObject, callbackMethod) {
-	var jsonURL = filename;
-	console.log(jsonURL);
-	var getJsonArgs = {
-		callbackObject: callbackObject,
-		callbackMethod: callbackMethod
-	};
-	this.httpRequest(this._httpMethodGet, jsonURL,
+FlashairUtil.prototype.getFile = function (filename, callbackObject, callbackMethod, optarg) {
+	console.log(filename);
+	this.httpRequest(FlashairUtil._httpMethodGet, filename,
 		function (data) {
-			var parsedObj = null;
-			try {
-				parsedObj = JSON.parse(data);
-			} catch (e) {
-				console.info(e);
-				console.info('request = "%s"', jsonURL);
-				console.info(data);
-			}
-			getJsonArgs.callbackObject[getJsonArgs.callbackMethod](parsedObj);
+			callbackObject[callbackMethod](data, optarg);
 		},
 		function (status) {
 			console.info(status);
-			console.info('request = "%s"', jsonURL);
-			getJsonArgs.callbackObject[getJsonArgs.callbackMethod](null);
+			console.info('request = "%s"', filename);
+			callbackObject[callbackMethod](null, optarg);
 		}
 	);
 };
 
 FlashairUtil.prototype.postFileRequest = function (dirname, filename, content,
 	callbackObject, callbackMethod) {
-	if (this._uploadArgs != null) {
-		callbackObject[callbackMethod](false, 'busy');
-	}
-	this._uploadArgs = {
+
+	var uploadArgs = {
 		dir: dirname,
 		file: filename,
 		content: content,
@@ -133,69 +117,65 @@ FlashairUtil.prototype.postFileRequest = function (dirname, filename, content,
 		callbackMethod: callbackMethod
 	};
 	if (this._writable) {
-		this.setUploadDir();
+		this.setUploadDir(uploadArgs);
 	} else {
-		this.setWritable();
+		this.setWritable(uploadArgs);
 	}
 };
 
-FlashairUtil.prototype.setWritable = function () {
+FlashairUtil.prototype.setWritable = function (uploadArgs) {
 	var self = this;
-	var url = this._uploadBase + this._uploadWriteProtect + 'ON';
-	this.httpRequest(this._httpMethodGet, url,
-	function (data) {
-		if (data != 'SUCCESS') {
-			self._uploadArgs.callbackObject[self._uploadArgs.callbackMethod](false, 'write protect');
-			self._uploadArgs = null;
-		} else {
-			self._writable = true;
-			self.setUploadDir();
-		}
-	},
-	null);
-};
-
-FlashairUtil.prototype.setUploadDir = function () {
-	var url = this._uploadBase + this._uploadDir + this._uploadArgs.dir;
-	this.httpRequest(this._httpMethodGet, url,
+	var url = FlashairUtil._uploadBase + FlashairUtil._uploadWriteProtect + 'ON';
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {
-				self._uploadArgs.callbackObject[self._uploadArgs.callbackMethod](false, 'upload directory');
-				self._uploadArgs = null;
+				uploadArgs.callbackObject[uploadArgs.callbackMethod](false, 'write protect');
 			} else {
-				self.setUploadTime();
+				self._writable = true;
+				self.setUploadDir(uploadArgs);
 			}
 		},
 		null);
 };
 
-FlashairUtil.prototype.setUploadTime = function () {
+FlashairUtil.prototype.setUploadDir = function (uploadArgs) {
+	var url = FlashairUtil._uploadBase + FlashairUtil._uploadDir + uploadArgs.dir;
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
+		function (data) {
+			if (data != 'SUCCESS') {
+				uploadArgs.callbackObject[uploadArgs.callbackMethod](false, 'upload directory');
+			} else {
+				self.setUploadTime(uploadArgs);
+			}
+		},
+		null);
+};
+
+FlashairUtil.prototype.setUploadTime = function (uploadArgs) {
 	var timeStamp = this.getTimeStampForFAT();
-	var url = this._uploadBase + this._uploadSystemTime + '0x' + timeStamp.toString(16);
-	this.httpRequest(this._httpMethodGet, url,
+	var url = FlashairUtil._uploadBase + FlashairUtil._uploadSystemTime + '0x' + timeStamp.toString(16);
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {
-				self._uploadArgs.callbackObject[self._uploadArgs.callbackMethod](false, 'set sysyem time');
-				self._uploadArgs = null;
+				uploadArgs.callbackObject[uploadArgs.callbackMethod](false, 'set sysyem time');
 			} else {
-				self.uploadTime();
+				self.uploadTime(uploadArgs);
 			}
 		},
 		null);
 };
 
-FlashairUtil.prototype.uploadFile = function () {
-	var url = this._uploadBase;
-	this.httpRequest(this._httpMethodPost, url,
+FlashairUtil.prototype.uploadFile = function (uploadArgs) {
+	var url = FlashairUtil._uploadBase;
+	this.httpRequest(FlashairUtil._httpMethodPost, url,
 		function (data) {
 			if (data != 'SUCCESS') {
-				self._uploadArgs.callbackObject[self._uploadArgs.callbackMethod](false, 'upload file');
+				uploadArgs.callbackObject[uploadArgs.callbackMethod](false, 'upload file');
 			} else {
-				self._uploadArgs.callbackObject[self._uploadArgs.callbackMethod](true, 'upload file');
+				uploadArgs.callbackObject[uploadArgs.callbackMethod](true, 'upload file');
 			}
-			self._uploadArgs = null;
 		},
-		null, self._uploadArgs.content);
+		null, uploadArgs.content);
 };
 
 FlashairUtil.prototype.getTimeStampForFAT = function () {
@@ -215,30 +195,26 @@ FlashairUtil.prototype.getTimeStampForFAT = function () {
 FlashairUtil.prototype.makeDirectoryRequest = function (dirbase, dirname,
 	callbackObject, callbackMethod) {
 
-	if (this._mkdirArgs != null) {
-		callbackObject[callbackMethod](false, 'busy');
-	}
-	this._mkdirArgs = {
+	var mkdirArgs = {
 		dirbase: dirbase,
 		dirname: dirname,
 		callbackObject: callbackObject,
 		callbackMethod: callbackMethod
 	};
 	if (this._writable) {
-		this.setMakeDir();
+		this.setMakeDir(mkdirArgs);
 	} else {
-		this.setWritableDir();
+		this.setWritableDir(mkdirArgs);
 	}
 };
 
-FlashairUtil.prototype.setWritableDir = function () {
+FlashairUtil.prototype.setWritableDir = function (mkdirArgs) {
 	var self = this;
-	var url = this._uploadBase + this._uploadWriteProtect + 'ON';
-	this.httpRequest(this._httpMethodGet, url,
+	var url = FlashairUtil._uploadBase + FlashairUtil._uploadWriteProtect + 'ON';
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
 	function (data) {
 		if (data != 'SUCCESS') {
-			self._mkdirArgs.callbackObject[self._mkdirArgs.callbackMethod](false, 'write protect');
-			self._mkdirArgs = null;
+			mkdirArgs.callbackObject[mkdirArgs.callbackMethod](false, 'write protect');
 		} else {
 			self._writable = true;
 			self.makeDirectory();
@@ -247,16 +223,15 @@ FlashairUtil.prototype.setWritableDir = function () {
 	null);
 };
 
-FlashairUtil.prototype.makeDirectory = function () {
-	var url = this._uploadBase + this._uploadDir + this._mkdirArgs.dirbase + '/' +  this._mkdirArgs.dirname;
-	this.httpRequest(this._httpMethodGet, url,
+FlashairUtil.prototype.makeDirectory = function (mkdirArgs) {
+	var url = FlashairUtil._uploadBase + FlashairUtil._uploadDir + this._mkdirArgs.dirbase + '/' +  mkdirArgs.dirname;
+	this.httpRequest(FlashairUtil._httpMethodGet, url,
 		function (data) {
 			if (data != 'SUCCESS') {
-				self._mkdirArgs.callbackObject[self._mkdirArgs.callbackMethod](false, 'make directory');
+				mkdirArgs.callbackObject[mkdirArgs.callbackMethod](false, 'make directory');
 			} else {
-				self._mkdirArgs.callbackObject[self._mkdirArgs.callbackMethod](true, 'make directory');
+				mkdirArgs.callbackObject[mkdirArgs.callbackMethod](true, 'make directory');
 			}
-			self._mkdirArgs = null;
 		},
 		null);
 };

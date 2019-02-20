@@ -213,7 +213,7 @@ var onClickClearMaps = function () {
 //
 
 var OpenCVValEdit = function () {
-    dsairApp.cvController.OpenCVValEdit();
+    dsairApp.cvController.openCVValEdit();
 };
 
 var onClickCVRead = function () {
@@ -234,10 +234,6 @@ var onSelectProtocol = function () {
 };
 
 //
-
-var fileItemSelect = function (n) {
-    dsairApp.soundController.fileItemSelect(n);
-};
 
 var stopSound = function () {
     dsairApp.soundController.stopSound();

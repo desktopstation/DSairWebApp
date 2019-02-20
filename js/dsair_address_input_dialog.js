@@ -89,3 +89,28 @@ DsairAddressInputDialog.prototype.open = function (inAddr, inCallerObject, inMet
     }
     this.super.open.call(this, inCallerObject, inMethodName);
 };
+
+DsairAddressInputDialog.prototype.onKeyDown = function (e) {
+    var key = e.key;
+    e.preventDefault();
+    if (key >= '0' && key <= '9') {
+        this.addOneDigit(parseInt(key));
+        return;
+    }
+    switch (e.key) {
+        case 'Enter':
+            break;
+        case 'Escape':
+            break;
+        case 'Backspace':
+            break;
+        case 'Delete':
+            break;
+        case '+':
+            break;
+        case '-':
+            break;
+        default:
+            break;
+    }
+};

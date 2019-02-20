@@ -98,6 +98,6 @@ DsairCVView.prototype.addCVFileList= function (caption, val) {
 };
 
 DsairCVView.prototype.changeCVFileList= function (val) {
-    this._selectCbObj[this._selectCbMethod](val)
+    this._selectCbObj[this._selectCbMethod](val);
 };
 

@@ -1,10 +1,15 @@
+//
 var DsairSoundView = function () {
     this._loaded = false;
+    this._id = 'soundlist';
+    this._controller = null;
+    this._selectCbMethod = '';
     window.addEventListener('DOMContentLoaded', this);
     window.addEventListener('load', this);
 };
 
 DsairSoundView.prototype.dirIcon = DsairConst.documentRootDir + '/img/file_dir.png';
+DsairSoundView.prototype.dirColor = 'blue';
 DsairSoundView.prototype.extList = [];
 DsairSoundView.prototype.extList['mp3'] = { icon: DsairConst.documentRootDir + '/img/file_mp3.png'};
 DsairSoundView.prototype.extList['pdf'] = { icon: DsairConst.documentRootDir + '/img/file_pdf.png'};
@@ -30,54 +35,63 @@ DsairSoundView.prototype.onLoad = function () {
     $('.soundbutton').buttonset();
 };
 
-DsairSoundView.prototype.splitExt = function (filename) {
-    return filename.split(/\.(?=[^.]+$)/);
-};
+DsairSoundView.prototype.addControl = function (inController, method) {
+    this._controller = inController;
+    this._selectCbMethod = method;
+};7
+
+DsairSoundView.prototype.makeButtonId = function (idstr) {
+    return  this._id + '-button' + idstr;
+}
 
 DsairSoundView.prototype.makeButton = function (buttonIcon, buttonColor, buttonLabel, buttonId) {
-    var filelink = '<button onclick=fileItemSelect(' + buttonId.toString() + ')';
+    var filelink;
+
+    filelink = '<button id=' + buttonId;
     if (buttonColor != null) {
         filelink += ' style="color:' + buttonColor + ';"';
     }
     filelink += '>';
     filelink += '<img src="' + buttonIcon + '" width=24 style="margin-right:0.2em;">';
     filelink += buttonLabel + '</button> <br>';
+    
     return filelink;
 };
 
-// Show file list
-DsairSoundView.prototype.showFileList = function (path, filelist) {
-    // Clear box.
-    $('#soundlist').html('');
-    // Output a link to the parent directory if it is not the root directory.
-    if (path != '/') {
-        $('#soundlist').append(this.makeButton(this.dirIcon, 'blue', '..', DsairSoundControl.isUpDir));
+DsairSoundView.prototype.setDirectoryName = function (dirname) {
+    $('#sound-list-directory').html(dirname); 
+};
+
+DsairSoundView.prototype.clearFileList= function () {
+    $('#' + this._id).html('');
+};
+
+DsairSoundView.prototype.appendLink = function (filelink, buttonId, idx) {
+    $('#' + this._id).append(filelink);
+    var self = this;
+    $('#' + buttonId).on('click', function () {
+        self.onSelectItem(idx);
+    });
+};
+
+DsairSoundView.prototype.addRegularFile = function (filename, fileext, idx) {
+    var buttonId = this.makeButtonId(idx.toString());
+    var filelink = this.makeButton(this.extList[fileext].icon, null, filename, buttonId);
+    this.appendLink(filelink, buttonId, idx);
+};
+
+DsairSoundView.prototype.addDirectory = function (dirname, idx) {
+    var idstr;
+    if (idx == DsairFileControl.isUpDir) {
+        idstr = 'updir';
+    } else {
+        idstr = idx.toString();
     }
-    var len = filelist.length;
-    for (var i = 0; i < len; i++) {
-        var file = filelist[i];
-        //console.log('%s %d', file.fname, file.attr);
-        // Skip hidden file.
-        if ((file.attr & 0x02) != 0) {
-            continue;
-        }
-        var filelink;
-        // directory
-        if ((file.attr & 0x10) != 0) {
-            filelink = this.makeButton(this.dirIcon, 'blue', file.fname, i);
-        } else {
-            // regular file
-            var aExt = this.splitExt(file.fname.toLowerCase());
-            if (aExt.length <= 1) {
-                continue;
-            } 
-            if (!(aExt[1] in this.extList)) {
-                continue;
-            }
-            // Make a link to a file.
-            filelink = this.makeButton(this.extList[aExt[1]].icon, null, file.fname, i);
-        }
-        // Append a file entry or directory to the end of the list.
-        $('#soundlist').append(filelink);
-    }
+    var buttonId = this.makeButtonId(idstr);
+    var filelink = this.makeButton(this.dirIcon, this.dirColor, dirname, buttonId);
+    this.appendLink(filelink, buttonId, idx);
+};
+
+DsairSoundView.prototype.onSelectItem = function (idx) {
+    this._controller[this._selectCbMethod](idx);
 };

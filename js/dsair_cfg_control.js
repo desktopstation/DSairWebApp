@@ -28,17 +28,13 @@ DsairConfigControl.prototype.handleEvent = function (e) {
 };
 
 DsairConfigControl.prototype.onLoad = function () {
-    this._dsairCommand.getMasterCode();
-    this._dsairCommand.getSSID();
-    this._dsairCommand.getAppNetworoKey();
+    this._dsairCommand.getMasterCode(this, 'getMasterCodeCallback');
+    this._dsairCommand.getSSID(this, 'getSSIDCallback');
+    this._dsairCommand.getAppNetworoKey(this, 'getAppNetworkKeyCallback');
 };
-
 
 DsairConfigControl.prototype.addDsairCommand = function (inCommand) {
     this._dsairCommand = inCommand;
-    this._dsairCommand.addMasterCodeCallback(this);
-    this._dsairCommand.addSSIDCallback(this);
-    this._dsairCommand.addNetworkKeyCallback(this);
 };
 
 DsairConfigControl.prototype.addStorage = function (inStorage) {

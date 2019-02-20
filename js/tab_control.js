@@ -35,7 +35,7 @@ DsairTabControl.prototype.onLoad = function () {
     $('#dialogAL').dialog({ autoOpen: false });
     $('#dialogMsg').dialog({ autoOpen: false });
     $('#dialogCVInfo').dialog({ autoOpen: false });
-    $('#fileSelection').dialog({ autoOpen: false });
+    $('#file-selection-dialog').dialog({ autoOpen: false });
 
     $("#tabcontrol").bind('tabsactivate', function (event, ui) {
         switch (ui.newTab.index()) {
@@ -51,5 +51,6 @@ DsairTabControl.prototype.onLoad = function () {
                 break;
         }
     });
+    document.title = 'DSair class version';
 };
 
